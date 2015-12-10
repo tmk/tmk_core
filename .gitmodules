@@ -1,0 +1,4 @@
+[submodule "tool/chibios/chibios"]
+	path = tool/chibios/chibios
+	url = https://github.com/flabbergast/ChibiOS.git
+	branch = kinetis
