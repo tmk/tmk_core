@@ -38,6 +38,9 @@
 #ifdef LCD_ENABLE
 #include "gfx.h"
 #endif
+#ifdef LCD_BACKLIGHT_ENABLE
+#include "lcd_backlight.h"
+#endif
 
 
 /* -------------------------
@@ -114,6 +117,9 @@ int main(void) {
   sleep_led_init();
 #endif
 
+#ifdef LCD_ENABLE
+  lcd_backlight_init();
+#endif
 #ifdef LCD_ENABLE
   gfxInit();
 #endif

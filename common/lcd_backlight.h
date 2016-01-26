@@ -18,6 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef TMK_CORE_COMMON_LCD_BACKLIGHT_H_
 #define TMK_CORE_COMMON_LCD_BACKLIGHT_H_
 
-
+void lcd_backlight_init(void);
 
 #endif /* TMK_CORE_COMMON_LCD_BACKLIGHT_H_ */
