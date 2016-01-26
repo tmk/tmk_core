@@ -35,6 +35,9 @@
 #include "sleep_led.h"
 #endif
 #include "suspend.h"
+#ifdef LCD_ENABLE
+#include "gfx.h"
+#endif
 
 
 /* -------------------------
@@ -109,6 +112,10 @@ int main(void) {
 
 #ifdef SLEEP_LED_ENABLE
   sleep_led_init();
+#endif
+
+#ifdef LCD_ENABLE
+  gfxInit();
 #endif
 
   print("Keyboard start.\n");

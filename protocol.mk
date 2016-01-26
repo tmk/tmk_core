@@ -50,5 +50,9 @@ ifdef ADB_MOUSE_ENABLE
 	 OPT_DEFS += -DADB_MOUSE_ENABLE -DMOUSE_ENABLE
 endif
 
+ifdef LCD_ENABLE
+	OPT_DEFS += -LCD_ENABLE
+endif
+
 # Search Path
 VPATH += $(TMK_DIR)/protocol
