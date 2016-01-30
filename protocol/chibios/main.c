@@ -31,6 +31,7 @@
 #include "led.h"
 #include "sendchar.h"
 #include "debug.h"
+#include "print.h"
 #ifdef SLEEP_LED_ENABLE
 #include "sleep_led.h"
 #endif

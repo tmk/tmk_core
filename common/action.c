@@ -28,9 +28,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "action.h"
 
 #ifdef DEBUG_ACTION
-#include "debug.h"
-#else
 #include "nodebug.h"
+#else
+#include "debug.h"
 #endif
 
 
@@ -538,6 +538,7 @@ bool is_tap_key(keypos_t key)
  */
 void debug_event(keyevent_t event)
 {
+    (void)event;
     dprintf("%04X%c(%u)", (event.key.row<<8 | event.key.col), (event.pressed ? 'd' : 'u'), event.time);
 }
 
