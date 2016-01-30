@@ -117,7 +117,7 @@ int main(void) {
   sleep_led_init();
 #endif
 
-#ifdef LCD_ENABLE
+#ifdef LCD_BACKLIGHT_ENABLE
   lcd_backlight_init();
 #endif
 #ifdef LCD_ENABLE
