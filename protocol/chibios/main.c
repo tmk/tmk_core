@@ -42,6 +42,9 @@
 #ifdef LCD_BACKLIGHT_ENABLE
 #include "lcd_backlight.h"
 #endif
+#ifdef VISUALIZER_ENABLE
+#include "visualizer.h"
+#endif
 
 
 /* -------------------------
@@ -123,6 +126,9 @@ int main(void) {
 #endif
 #ifdef LCD_ENABLE
   gfxInit();
+#endif
+#ifdef VISUALIZER_ENABLE
+  visualizer_init();
 #endif
 
   print("Keyboard start.\n");
