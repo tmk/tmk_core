@@ -17,7 +17,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #ifndef TMK_CORE_COMMON_LCD_BACKLIGHT_H_
 #define TMK_CORE_COMMON_LCD_BACKLIGHT_H_
+#include "stdint.h"
 
 void lcd_backlight_init(void);
+void lcd_backlight_color(uint16_t r, uint16_t g, uint16_t b);
 
 #endif /* TMK_CORE_COMMON_LCD_BACKLIGHT_H_ */
