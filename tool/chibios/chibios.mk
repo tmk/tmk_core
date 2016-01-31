@@ -227,6 +227,9 @@ ULIBDIR =
 
 # List all user libraries here
 ULIBS =
+ifdef LCD_BACKLIGHT_ENABLE
+ULIBS += -lm
+endif
 
 #
 # End of user defines
