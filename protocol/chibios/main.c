@@ -44,6 +44,7 @@
 #endif
 #ifdef VISUALIZER_ENABLE
 #include "visualizer.h"
+#include "action_layer.h"
 #endif
 
 
@@ -135,7 +136,9 @@ int main(void) {
 
   /* Main loop */
   while(true) {
-
+#ifdef VISUALIZER_ENABLE
+    visualizer_set_current_layers(default_layer_state, layer_state);
+#endif
     if(USB_DRIVER.state == USB_SUSPENDED) {
       print("[s]");
       while(USB_DRIVER.state == USB_SUSPENDED) {

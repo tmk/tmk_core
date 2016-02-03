@@ -17,7 +17,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #ifndef VISUALIZER_H
 #define VISUALIZER_H
+#include <stdint.h>
 
 void visualizer_init(void);
+void visualizer_set_current_layers(uint32_t default_state, uint32_t state);
 
 #endif /* VISUALIZER_H */
