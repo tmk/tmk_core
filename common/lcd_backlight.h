@@ -1,0 +1,32 @@
+/*
+Copyright 2016 Fred Sundvik <fsundvik@gmail.com>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#ifndef TMK_CORE_COMMON_LCD_BACKLIGHT_H_
+#define TMK_CORE_COMMON_LCD_BACKLIGHT_H_
+#include "stdint.h"
+
+// Helper macros for storing hue, staturation and intensity as unsigned integers
+#define LCD_COLOR(hue, saturation, intensity) (hue << 16 | saturation << 8 | intensity)
+#define LCD_HUE(color) ((color >> 16) & 0xFF)
+#define LCD_SAT(color) ((color >> 8) & 0xFF)
+#define LCD_INT(color) (color & 0xFF)
+
+void lcd_backlight_init(void);
+void lcd_backlight_color(uint8_t hue, uint8_t saturation, uint8_t intensity);
+void lcd_backlight_brightness(uint8_t b);
+
+#endif /* TMK_CORE_COMMON_LCD_BACKLIGHT_H_ */

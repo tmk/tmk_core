@@ -31,10 +31,21 @@
 #include "led.h"
 #include "sendchar.h"
 #include "debug.h"
+#include "print.h"
 #ifdef SLEEP_LED_ENABLE
 #include "sleep_led.h"
 #endif
 #include "suspend.h"
+#ifdef LCD_ENABLE
+#include "gfx.h"
+#endif
+#ifdef LCD_BACKLIGHT_ENABLE
+#include "lcd_backlight.h"
+#endif
+#ifdef VISUALIZER_ENABLE
+#include "visualizer.h"
+#include "action_layer.h"
+#endif
 
 
 /* -------------------------
@@ -111,11 +122,23 @@ int main(void) {
   sleep_led_init();
 #endif
 
+#ifdef LCD_BACKLIGHT_ENABLE
+  lcd_backlight_init();
+#endif
+#ifdef LCD_ENABLE
+  gfxInit();
+#endif
+#ifdef VISUALIZER_ENABLE
+  visualizer_init();
+#endif
+
   print("Keyboard start.\n");
 
   /* Main loop */
   while(true) {
-
+#ifdef VISUALIZER_ENABLE
+    visualizer_set_state(default_layer_state, layer_state, keyboard_leds());
+#endif
     if(USB_DRIVER.state == USB_SUSPENDED) {
       print("[s]");
       while(USB_DRIVER.state == USB_SUSPENDED) {

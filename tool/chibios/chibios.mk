@@ -84,6 +84,7 @@ endif
 
 # Imported source files and paths
 CHIBIOS = $(TMK_DIR)/tool/chibios/chibios
+GFXLIB = $(TMK_DIR)/tool/ugfx
 # Startup files.
 include $(CHIBIOS)/os/common/ports/ARMCMx/compilers/GCC/mk/startup_$(MCU_STARTUP).mk
 # HAL-OSAL files (optional).
@@ -99,6 +100,9 @@ include $(CHIBIOS)/os/hal/osal/rt/osal.mk
 include $(CHIBIOS)/os/rt/rt.mk
 include $(CHIBIOS)/os/rt/ports/ARMCMx/compilers/GCC/mk/port_v$(ARMV)m.mk
 # Other files (optional).
+ifdef LCD_ENABLE
+	include $(GFXLIB)/gfx.mk
+endif
 
 # Define linker script file here
 ifneq ("$(wildcard $(TARGET_DIR)/ld/$(MCU_LDSCRIPT).ld)","")
@@ -119,6 +123,7 @@ CSRC = $(STARTUPSRC) \
        $(CHIBIOS)/os/hal/lib/streams/chprintf.c \
        $(TMK_DIR)/protocol/chibios/usb_main.c \
        $(TMK_DIR)/protocol/chibios/main.c \
+       $(GFXSRC) \
        $(SRC)
 
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global
@@ -152,7 +157,7 @@ INCDIR = $(STARTUPINC) $(KERNINC) $(PORTINC) $(OSALINC) \
          $(HALINC) $(PLATFORMINC) $(BOARDINC) $(TESTINC) \
          $(CHIBIOS)/os/hal/lib/streams $(CHIBIOS)/os/various \
          $(TMK_DIR) $(COMMON_DIR) $(TMK_DIR)/protocol/chibios \
-         $(TARGET_DIR)
+         $(GFXINC) $(TARGET_DIR)
 
 #
 # Project, sources and paths
@@ -222,6 +227,9 @@ ULIBDIR =
 
 # List all user libraries here
 ULIBS =
+ifdef LCD_BACKLIGHT_ENABLE
+ULIBS += -lm
+endif
 
 #
 # End of user defines

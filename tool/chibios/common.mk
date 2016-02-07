@@ -76,6 +76,19 @@ ifdef KEYMAP_SECTION_ENABLE
     endif
 endif
 
+ifdef LCD_ENABLE
+	OPT_DEFS += -DLCD_ENABLE
+endif
+
+ifdef LCD_BACKLIGHT_ENABLE
+	OPT_DEFS += -DLCD_BACKLIGHT_ENABLE
+endif
+
+ifdef VISUALIZER_ENABLE
+	OPT_DEFS += -DVISUALIZER_ENABLE
+endif
+
+
 # Version string
 OPT_DEFS += -DVERSION=$(shell (git describe --always --dirty || echo 'unknown') 2> /dev/null)
 

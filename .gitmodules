@@ -2,3 +2,6 @@
 	path = tool/chibios/chibios
 	url = https://github.com/flabbergast/ChibiOS.git
 	branch = kinetis
+[submodule "tool/ugfx"]
+	path = tool/ugfx
+	url = https://bitbucket.org/Tectu/ugfx.git

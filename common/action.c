@@ -538,6 +538,7 @@ bool is_tap_key(keypos_t key)
  */
 void debug_event(keyevent_t event)
 {
+    (void)event;
     dprintf("%04X%c(%u)", (event.key.row<<8 | event.key.col), (event.pressed ? 'd' : 'u'), event.time);
 }
 

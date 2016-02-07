@@ -1,5 +1,5 @@
 /*
-Copyright 2013 Jun Wako <wakojun@gmail.com>
+Copyright 2016 Fred Sundvik <fsundvik@gmail.com>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -15,15 +15,11 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef NODEBUG_H
-#define NODEBUG_H 1
+#ifndef VISUALIZER_H
+#define VISUALIZER_H
+#include <stdint.h>
 
-#ifdef NO_DEBUG
-    #include "debug.h"
-#else
-    #define NO_DEBUG
-    #include "debug.h"
-    #undef NO_DEBUG
-#endif
+void visualizer_init(void);
+void visualizer_set_state(uint32_t default_state, uint32_t state, uint32_t leds);
 
-#endif
+#endif /* VISUALIZER_H */
