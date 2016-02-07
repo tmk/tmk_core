@@ -137,7 +137,7 @@ int main(void) {
   /* Main loop */
   while(true) {
 #ifdef VISUALIZER_ENABLE
-    visualizer_set_current_layers(default_layer_state, layer_state);
+    visualizer_set_state(default_layer_state, layer_state, keyboard_leds());
 #endif
     if(USB_DRIVER.state == USB_SUSPENDED) {
       print("[s]");
