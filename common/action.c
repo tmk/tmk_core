@@ -28,9 +28,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "action.h"
 
 #ifdef DEBUG_ACTION
-#include "nodebug.h"
-#else
 #include "debug.h"
+#else
+#include "nodebug.h"
 #endif
 
 
