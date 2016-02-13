@@ -90,7 +90,11 @@ void keyboard_init(void)
 #ifdef BACKLIGHT_ENABLE
     backlight_init();
 #endif
+
+    post_keyboard_init();
 }
+
+__attribute__ ((weak)) void post_keyboard_init(void) {}
 
 /*
  * Do keyboard routine jobs: scan mantrix, light LEDs, ...
@@ -168,7 +172,11 @@ MATRIX_LOOP_END:
         led_status = host_keyboard_leds();
         keyboard_set_leds(led_status);
     }
+
+    post_keyboard_task();
 }
+
+__attribute__ ((weak)) void post_keyboard_task(void) {}
 
 void keyboard_set_leds(uint8_t leds)
 {

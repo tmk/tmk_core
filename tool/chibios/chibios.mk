@@ -221,7 +221,7 @@ UINCDIR =
 ULIBDIR =
 
 # List all user libraries here
-ULIBS =
+ULIBS = $(OPT_LIBS)
 
 #
 # End of user defines
