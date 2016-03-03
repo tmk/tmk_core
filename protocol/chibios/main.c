@@ -35,6 +35,7 @@
 #include "sleep_led.h"
 #endif
 #include "suspend.h"
+#include "hooks.h"
 
 
 /* -------------------------
@@ -58,6 +59,22 @@ host_driver_t chibios_driver = {
   send_consumer
 };
 
+/* Default hooks definitions. */
+__attribute__((weak))
+void early_init_hook(void) {}
+
+__attribute__((weak))
+void late_init_hook(void) {}
+
+__attribute__((weak))
+void suspend_loop_hook(void) {
+  /* Do this in the suspended state */
+  suspend_power_down(); // on AVR this deep sleeps for 15ms
+  /* Remote wakeup */
+  if((USB_DRIVER.status & 2) && suspend_wakeup_condition()) {
+    send_remote_wakeup(&USB_DRIVER);
+  }
+}
 
 /* TESTING
  * Amber LED blinker thread, times are in milliseconds.
@@ -91,6 +108,8 @@ int main(void) {
   // TESTING
   // chThdCreateStatic(waBlinkerThread, sizeof(waBlinkerThread), NORMALPRIO, blinkerThread, NULL);
 
+  early_init_hook();
+
   /* Init USB */
   init_usb_driver(&USB_DRIVER);
 
@@ -120,21 +139,18 @@ int main(void) {
 
   print("Keyboard start.\n");
 
+  late_init_hook();
+
   /* Main loop */
   while(true) {
 
     if(USB_DRIVER.state == USB_SUSPENDED) {
       print("[s]");
       while(USB_DRIVER.state == USB_SUSPENDED) {
-        /* Do this in the suspended state */
-        suspend_power_down(); // on AVR this deep sleeps for 15ms
-        /* Remote wakeup */
-        if((USB_DRIVER.status & 2) && suspend_wakeup_condition()) {
-          send_remote_wakeup(&USB_DRIVER);
-        }
+        suspend_loop_hook();
       }
       /* Woken up */
-      // variables has been already cleared by the wakeup hook
+      // variables have been already cleared
       send_keyboard_report();
 #ifdef MOUSEKEY_ENABLE
       mousekey_send();

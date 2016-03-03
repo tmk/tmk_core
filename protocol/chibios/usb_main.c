@@ -27,6 +27,25 @@
 #include "sleep_led.h"
 #include "led.h"
 #endif
+#include "hooks.h"
+
+/* TMK hooks */
+__attribute__((weak))
+void wakeup_hook(void) {
+#ifdef SLEEP_LED_ENABLE
+    sleep_led_disable();
+    // NOTE: converters may not accept this
+    led_set(host_keyboard_leds());
+#endif /* SLEEP_LED_ENABLE */
+}
+
+ __attribute__((weak))
+void suspend_entry_hook(void) {
+#ifdef SLEEP_LED_ENABLE
+    sleep_led_enable();
+#endif /* SLEEP_LED_ENABLE */
+}
+
 
 /* ---------------------------------------------------------
  *       Global interface variables and declarations
@@ -795,19 +814,13 @@ static void usb_event_cb(USBDriver *usbp, usbevent_t event) {
 
   case USB_EVENT_SUSPEND:
     //TODO: from ISR! print("[S]");
-#ifdef SLEEP_LED_ENABLE
-    sleep_led_enable();
-#endif /* SLEEP_LED_ENABLE */
+    suspend_entry_hook();
     return;
 
   case USB_EVENT_WAKEUP:
     //TODO: from ISR! print("[W]");
     suspend_wakeup_init();
-#ifdef SLEEP_LED_ENABLE
-    sleep_led_disable();
-    // NOTE: converters may not accept this
-    led_set(host_keyboard_leds());
-#endif /* SLEEP_LED_ENABLE */
+    wakeup_hook();
     return;
 
   case USB_EVENT_STALLED:
