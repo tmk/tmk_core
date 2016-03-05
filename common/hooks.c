@@ -15,6 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "keyboard.h"
 #include "hooks.h"
 
 /* -------------------------------------------------
@@ -44,7 +45,7 @@ void matrix_change_hook(keyevent_t event) {
 /* Default behaviour: calls led_set (for compatibility). */
 __attribute__((weak))
 void led_update_hook(uint8_t led_status) {
-    led_set(led_status);
+    keyboard_set_leds(led_status);
 }
 
 /* Called when indicator LEDs need updating from firmware. */
