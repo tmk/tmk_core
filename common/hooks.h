@@ -81,8 +81,4 @@ void layer_change_hook(uint8_t layer_state);
 /* Default behaviour: calls led_set (for compatibility). */
 void led_update_hook(uint8_t led_status);
 
-/* Called when indicator LEDs need updating from firmware. */
-/* Default behaviour: calls led_set (for compatibility). */
-void led_restore_hook(uint8_t led_status);
-
 #endif /* _HOOKS_H_ */

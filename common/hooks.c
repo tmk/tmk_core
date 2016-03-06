@@ -48,14 +48,6 @@ void led_update_hook(uint8_t led_status) {
     keyboard_set_leds(led_status);
 }
 
-/* Called when indicator LEDs need updating from firmware. */
-/* Default behaviour: calls led_set (for compatibility). */
-void led_restore_hook(uint8_t led_status);
-__attribute__((weak))
-void led_restore_hook(uint8_t led_status) {
-    led_set(led_status);
-}
-
 /* Called once, on checking the bootmagic combos. */
 /* Default behaviour: do nothing. */
 __attribute__((weak))
