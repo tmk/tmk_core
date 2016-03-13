@@ -21,6 +21,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "keyboard.h"
 #include "led.h"
 
+typedef struct _host_driver_t host_driver_t;
+
 /* -------------------------------------
  * Protocol hooks
  * ------------------------------------- */
@@ -28,6 +30,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /* Called once, very early stage of initialization, just after processor startup. */
 /* Default behaviour: do nothing. */
 void hook_early_init(void);
+
+/* Called once, after USB is initialised */
+/* Should wait for a connection to the host and return a driver that corresponds to that connection */
+/* Default behaviour: wait for a USB connection to the host and return the default driver */
+/* NOTE: Currently implemented only for ChibiOS */
+host_driver_t* hook_keyboard_connect(host_driver_t* default_driver);
 
 /* Called once, very last stage of initialization, just before keyboard loop. */
 /* Default behaviour: do nothing. */

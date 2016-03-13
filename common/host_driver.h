@@ -22,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "report.h"
 
 
-typedef struct {
+typedef struct _host_driver_t {
     uint8_t (*keyboard_leds)(void);
     void (*send_keyboard)(report_keyboard_t *);
     void (*send_mouse)(report_mouse_t *);

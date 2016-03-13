@@ -64,6 +64,15 @@ __attribute__((weak))
 void hook_early_init(void) {}
 
 __attribute__((weak))
+host_driver_t* hook_keyboard_connect(host_driver_t* default_driver) {
+  /* Wait until the USB is active */
+  while(USB_DRIVER.state != USB_ACTIVE)
+    chThdSleepMilliseconds(50);
+
+  return default_driver;
+}
+
+__attribute__((weak))
 void hook_late_init(void) {}
 
 __attribute__((weak))
@@ -116,9 +125,7 @@ int main(void) {
   /* init printf */
   init_printf(NULL,sendchar_pf);
 
-  /* Wait until the USB is active */
-  while(USB_DRIVER.state != USB_ACTIVE)
-    chThdSleepMilliseconds(50);
+  host_driver_t* driver = hook_keyboard_connect(&chibios_driver);
 
   /* Do need to wait here!
    * Otherwise the next print might start a transfer on console EP
@@ -131,7 +138,7 @@ int main(void) {
 
   /* init TMK modules */
   keyboard_init();
-  host_set_driver(&chibios_driver);
+  host_set_driver(driver);
 
 #ifdef SLEEP_LED_ENABLE
   sleep_led_init();
