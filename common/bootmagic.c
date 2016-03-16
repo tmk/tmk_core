@@ -9,7 +9,7 @@
 #include "action_layer.h"
 #include "eeconfig.h"
 #include "bootmagic.h"
-#include "hooks.h"
+#include "hook.h"
 
 keymap_config_t keymap_config;
 
@@ -42,7 +42,7 @@ void bootmagic(void)
     }
 
     /* user-defined checks */
-    bootmagic_hook();
+    hook_bootmagic();
 
     /* debug enable */
     debug_config.raw = eeconfig_read_debug();

@@ -35,7 +35,7 @@
 #include "sleep_led.h"
 #endif
 #include "suspend.h"
-#include "hooks.h"
+#include "hook.h"
 
 
 /* -------------------------
@@ -61,13 +61,13 @@ host_driver_t chibios_driver = {
 
 /* Default hooks definitions. */
 __attribute__((weak))
-void early_init_hook(void) {}
+void hook_early_init(void) {}
 
 __attribute__((weak))
-void late_init_hook(void) {}
+void hook_late_init(void) {}
 
 __attribute__((weak))
-void suspend_loop_hook(void) {
+void hook_suspend_loop(void) {
   /* Do this in the suspended state */
   suspend_power_down(); // on AVR this deep sleeps for 15ms
   /* Remote wakeup */
@@ -108,7 +108,7 @@ int main(void) {
   // TESTING
   // chThdCreateStatic(waBlinkerThread, sizeof(waBlinkerThread), NORMALPRIO, blinkerThread, NULL);
 
-  early_init_hook();
+  hook_early_init();
 
   /* Init USB */
   init_usb_driver(&USB_DRIVER);
@@ -139,7 +139,7 @@ int main(void) {
 
   print("Keyboard start.\n");
 
-  late_init_hook();
+  hook_late_init();
 
   /* Main loop */
   while(true) {
@@ -147,7 +147,7 @@ int main(void) {
     if(USB_DRIVER.state == USB_SUSPENDED) {
       print("[s]");
       while(USB_DRIVER.state == USB_SUSPENDED) {
-        suspend_loop_hook();
+        hook_suspend_loop();
       }
       /* Woken up */
       // variables have been already cleared

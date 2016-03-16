@@ -27,11 +27,11 @@
 #include "sleep_led.h"
 #include "led.h"
 #endif
-#include "hooks.h"
+#include "hook.h"
 
 /* TMK hooks */
 __attribute__((weak))
-void wakeup_hook(void) {
+void hook_wakeup(void) {
 #ifdef SLEEP_LED_ENABLE
     sleep_led_disable();
     // NOTE: converters may not accept this
@@ -40,7 +40,7 @@ void wakeup_hook(void) {
 }
 
  __attribute__((weak))
-void suspend_entry_hook(void) {
+void hook_suspend_entry(void) {
 #ifdef SLEEP_LED_ENABLE
     sleep_led_enable();
 #endif /* SLEEP_LED_ENABLE */
@@ -814,13 +814,13 @@ static void usb_event_cb(USBDriver *usbp, usbevent_t event) {
 
   case USB_EVENT_SUSPEND:
     //TODO: from ISR! print("[S]");
-    suspend_entry_hook();
+    hook_suspend_entry();
     return;
 
   case USB_EVENT_WAKEUP:
     //TODO: from ISR! print("[W]");
     suspend_wakeup_init();
-    wakeup_hook();
+    hook_wakeup();
     return;
 
   case USB_EVENT_STALLED:

@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "action_macro.h"
 #include "action_util.h"
 #include "action.h"
-#include "hooks.h"
+#include "hook.h"
 
 #ifdef DEBUG_ACTION
 #include "debug.h"
@@ -40,7 +40,7 @@ void action_exec(keyevent_t event)
     if (!IS_NOEVENT(event)) {
         dprint("\n---- action_exec: start -----\n");
         dprint("EVENT: "); debug_event(event); dprintln();
-        matrix_change_hook(event);
+        hook_matrix_change(event);
     }
 
     keyrecord_t record = { .event = event };

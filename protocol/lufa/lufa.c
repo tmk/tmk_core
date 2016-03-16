@@ -48,7 +48,7 @@
 #include "sleep_led.h"
 #endif
 #include "suspend.h"
-#include "hooks.h"
+#include "hook.h"
 
 #include "descriptor.h"
 #include "lufa.h"
@@ -181,13 +181,13 @@ void EVENT_USB_Device_Reset(void)
 void EVENT_USB_Device_Suspend()
 {
     print("[S]");
-    suspend_entry_hook();
+    hook_suspend_entry();
 }
 
 void EVENT_USB_Device_WakeUp()
 {
     print("[W]");
-    wakeup_hook();
+    hook_wakeup();
 }
 
 #ifdef CONSOLE_ENABLE
@@ -586,7 +586,7 @@ int main(void)
 {
     setup_mcu();
     keyboard_setup();
-    early_init_hook();
+    hook_early_init();
     setup_usb();
     sei();
 
@@ -608,11 +608,11 @@ int main(void)
 #endif
 
     print("Keyboard start.\n");
-    late_init_hook();
+    hook_late_init();
     while (1) {
         while (USB_DeviceState == DEVICE_STATE_Suspended) {
             print("[s]");
-            suspend_loop_hook();
+            hook_suspend_loop();
         }
 
         keyboard_task();
@@ -626,13 +626,13 @@ int main(void)
 
 /* hooks */
 __attribute__((weak))
-void early_init_hook(void) {}
+void hook_early_init(void) {}
 
 __attribute__((weak))
-void late_init_hook(void) {}
+void hook_late_init(void) {}
 
  __attribute__((weak))
-void suspend_entry_hook(void)
+void hook_suspend_entry(void)
 {
 #ifdef SLEEP_LED_ENABLE
     sleep_led_enable();
@@ -640,7 +640,7 @@ void suspend_entry_hook(void)
 }
 
 __attribute__((weak))
-void suspend_loop_hook(void)
+void hook_suspend_loop(void)
 {
     suspend_power_down();
     if (USB_Device_RemoteWakeupEnabled && suspend_wakeup_condition()) {
@@ -649,7 +649,7 @@ void suspend_loop_hook(void)
 }
 
 __attribute__((weak))
-void wakeup_hook(void)
+void hook_wakeup(void)
 {
     suspend_wakeup_init();
 #ifdef SLEEP_LED_ENABLE
