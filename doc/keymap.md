@@ -51,8 +51,8 @@ The **layer state** indicates the current on/off status of all layers. It is def
 #### 0.1.2 The default layer
 The **default layer** is the base keymap layer (0-31) which is always active and considered the "bottom" of the stack. When the firmware boots, the default layer is the only active layer. It is set to layer 0 by default, though this can be changed ~~in *config.h*~~ via Boot Magic settings.
 
-    Initial state of Keymap          Change base layout              
-    -----------------------          ------------------              
+    Initial state of Keymap          Change base layout
+    -----------------------          ------------------
 
       31                               31
       30                               30
@@ -95,17 +95,17 @@ Note that ***higher layers have priority in the layer stack***. The firmware sta
 
 
 ### 0.3 Keymap Example
-Keymap is **`keymaps[]`** C array in fact and you can define layers in it with **`KEYMAP()`** C macro and keycodes. To use complex actions you need to define `Fn` keycode in **`fn_actions[]`** array.
+The keymap is defined in the **`keymaps[]`** array, a 2-dimensional array of rows and columns corresponding to positions in the keyboard matrix. But most often the layers are defined using C macros to allow for easier reading and editing of the keymap files. To use complex actions you need to define `Fn` keycodes in the **`fn_actions[]`** array.
 
-This is a keymap example for [HHKB](http://en.wikipedia.org/wiki/Happy_Hacking_Keyboard) keyboard.
-This example has three layers, 'Qwerty' as base layer, 'Cursor' and  'Mousekey'.
+This is a keymap example for the [HHKB](http://en.wikipedia.org/wiki/Happy_Hacking_Keyboard) keyboard.
+This example has three layers: the QWERTY base layer, and two overlay layers for cursor and mousekey control, respectively.
 In this example,
 
- `Fn0` is a **momentary layer switching** key, you can use keys on Cursor layer while holding the key.
+ `Fn0` is a **momentary layer switching** key--you can use keys on the Cursor layer while holding the key.
 
- `Fn1` is a momentary layer switching key with tapping feature, you can get semicolon **';'** with taping the key and switch layers while holding the key. The word **'tap'** or **'tapping'** mean to press and release a key quickly.
+ `Fn1` is a momentary layer switching key with tapping function--tapping the key as one would normally use it, sends the semicolon **';'** keycode, while holding the key down switches layers.
 
- `Fn2` is a **toggle layer switch** key, you can stay switched layer after releasing the key unlike momentary switching.
+ `Fn2` is a **toggle layer switch** key--pressing the key toggles the layer on until you press it again.
 
 You can find other keymap definitions in file `keymap.c` located on project directories.
 
