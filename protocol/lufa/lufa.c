@@ -181,13 +181,13 @@ void EVENT_USB_Device_Reset(void)
 void EVENT_USB_Device_Suspend()
 {
     print("[S]");
-    hook_suspend_entry();
+    hook_usb_suspend_entry();
 }
 
 void EVENT_USB_Device_WakeUp()
 {
     print("[W]");
-    hook_wakeup();
+    hook_usb_wakeup();
 }
 
 #ifdef CONSOLE_ENABLE
@@ -585,8 +585,8 @@ int main(void)  __attribute__ ((weak));
 int main(void)
 {
     setup_mcu();
-    keyboard_setup();
     hook_early_init();
+    keyboard_setup();
     setup_usb();
     sei();
 
@@ -612,7 +612,7 @@ int main(void)
     while (1) {
         while (USB_DeviceState == DEVICE_STATE_Suspended) {
             print("[s]");
-            hook_suspend_loop();
+            hook_usb_suspend_loop();
         }
 
         keyboard_task();
@@ -632,7 +632,7 @@ __attribute__((weak))
 void hook_late_init(void) {}
 
  __attribute__((weak))
-void hook_suspend_entry(void)
+void hook_usb_suspend_entry(void)
 {
 #ifdef SLEEP_LED_ENABLE
     sleep_led_enable();
@@ -640,7 +640,7 @@ void hook_suspend_entry(void)
 }
 
 __attribute__((weak))
-void hook_suspend_loop(void)
+void hook_usb_suspend_loop(void)
 {
     suspend_power_down();
     if (USB_Device_RemoteWakeupEnabled && suspend_wakeup_condition()) {
@@ -649,7 +649,7 @@ void hook_suspend_loop(void)
 }
 
 __attribute__((weak))
-void hook_wakeup(void)
+void hook_usb_wakeup(void)
 {
     suspend_wakeup_init();
 #ifdef SLEEP_LED_ENABLE

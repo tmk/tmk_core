@@ -67,7 +67,7 @@ __attribute__((weak))
 void hook_late_init(void) {}
 
 __attribute__((weak))
-void hook_suspend_loop(void) {
+void hook_usb_suspend_loop(void) {
   /* Do this in the suspended state */
   suspend_power_down(); // on AVR this deep sleeps for 15ms
   /* Remote wakeup */
@@ -147,7 +147,7 @@ int main(void) {
     if(USB_DRIVER.state == USB_SUSPENDED) {
       print("[s]");
       while(USB_DRIVER.state == USB_SUSPENDED) {
-        hook_suspend_loop();
+        hook_usb_suspend_loop();
       }
       /* Woken up */
       // variables have been already cleared

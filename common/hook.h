@@ -34,18 +34,18 @@ void hook_early_init(void);
 void hook_late_init(void);
 
 /* Called once, on getting SUSPEND event from USB. */
-/* Default behaviour: enables sleep LED breathing. */
-void hook_suspend_entry(void);
+/* Default behaviour: do nothing. */
+void hook_usb_suspend_entry(void);
 
 /* Called repeatedly during the SUSPENDed state. */
 /* Default behaviour: power down and periodically check
  * the matrix, cause wakeup if needed. */
-void hook_suspend_loop(void);
+void hook_usb_suspend_loop(void);
 
 /* Called once, on getting WAKE event from USB. */
 /* Default behaviour: disables sleep LED breathing and restores 
  * the "normal" indicator LED status by default. */
-void hook_wakeup(void);
+void hook_usb_wakeup(void);
 
 /* Called once, on checking the bootmagic combos. */
 /* Default behaviour: do nothing. */
