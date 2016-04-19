@@ -10,7 +10,7 @@ OBJECTS += \
 	$(OBJDIR)/common/print.o \
 	$(OBJDIR)/common/debug.o \
 	$(OBJDIR)/common/util.o \
-	$(OBJDIR)/common/hooks.o \
+	$(OBJDIR)/common/hook.o \
 	$(OBJDIR)/common/mbed/suspend.o \
 	$(OBJDIR)/common/mbed/timer.o \
 	$(OBJDIR)/common/mbed/xprintf.o \
