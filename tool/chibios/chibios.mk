@@ -35,7 +35,7 @@ endif
 
 # Enable this if you want link time optimizations (LTO)
 ifeq ($(USE_LTO),)
-  USE_LTO = yes
+  USE_LTO = no
 endif
 
 # If enabled, this option allows to compile the application in THUMB mode.
@@ -104,7 +104,7 @@ endif
 include $(PLATFORM_MK)
 
 
-BOARD_MK = $(TARGET_DIR)/boards/$(BOARD)
+BOARD_MK = $(TARGET_DIR)/boards/$(BOARD)/board.mk
 ifeq ("$(wildcard $(BOARD_MK))","")
 	BOARD_MK = $(CHIBIOS)/os/hal/boards/$(BOARD)/board.mk
 	ifeq ("$(wildcard $(BOARD_MK))","")
