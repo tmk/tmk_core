@@ -105,7 +105,7 @@ endif
 include $(PLATFORM_MK)
 
 
-BOARD_MK = $(TARGET_DIR)/boards/$(BOARD)
+BOARD_MK = $(TARGET_DIR)/boards/$(BOARD)/board.mk
 ifeq ("$(wildcard $(BOARD_MK))","")
 	BOARD_MK = $(CHIBIOS)/os/hal/boards/$(BOARD)/board.mk
 	ifeq ("$(wildcard $(BOARD_MK))","")
