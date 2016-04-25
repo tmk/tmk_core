@@ -187,6 +187,7 @@ void EVENT_USB_Device_Reset(void)
 #ifdef LUFA_DEBUG
     print("[R]");
 #endif
+    USB_IsInitialized = false;
 }
 
 void EVENT_USB_Device_Suspend()
