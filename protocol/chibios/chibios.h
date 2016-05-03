@@ -1,5 +1,5 @@
 /*
-Copyright 2011 Jun Wako <wakojun@gmail.com>
+Copyright 2016 Fred Sundvik
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -15,28 +15,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef HOST_DRIVER_H
-#define HOST_DRIVER_H
+#ifndef CHIBIOS_H
+#define CHIBIOS_H
 
-#include <stdint.h>
-#include <stdbool.h>
-#include "report.h"
+extern host_driver_t chibios_usb_driver;
 
-
-typedef struct {
-    void (*init)(void);
-    bool (*is_connected)(void);
-    bool (*is_suspended) (void);
-    uint8_t (*keyboard_leds)(void);
-    void (*send_keyboard)(report_keyboard_t *);
-    void (*send_mouse)(report_mouse_t *);
-    void (*send_system)(uint16_t);
-    void (*send_consumer)(uint16_t);
-} host_driver_t;
-
-typedef struct {
-    int num_drivers;
-    host_driver_t* drivers[4];
-} host_driver_configuration_t;
-
-#endif
+#endif /* CHIBIOS_H */

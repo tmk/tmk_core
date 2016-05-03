@@ -20,10 +20,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "keyboard.h"
 #include "led.h"
+#include "host_driver.h"
 
 /* -------------------------------------
  * Protocol hooks
  * ------------------------------------- */
+
+/* Called once, at the program start. */
+/* Default behaviour: returns a configuration for the default driver. */
+host_driver_configuration_t* hook_get_driver_configuration(void);
+
 
 /* Called once, very early stage of initialization, just after processor startup. */
 /* Default behaviour: do nothing. */

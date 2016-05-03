@@ -36,6 +36,7 @@
 #endif
 #include "suspend.h"
 #include "hook.h"
+#include "chibios.h"
 
 
 /* -------------------------
@@ -55,7 +56,7 @@ void send_system(uint16_t data);
 void send_consumer(uint16_t data);
 
 /* host struct */
-host_driver_t chibios_driver = {
+host_driver_t chibios_usb_driver = {
   init_driver,
   is_usb_connected,
   is_usb_suspended,
@@ -64,6 +65,11 @@ host_driver_t chibios_driver = {
   send_mouse,
   send_system,
   send_consumer
+};
+
+host_driver_configuration_t chibios_driver_configuration = {
+  .num_drivers = 1,
+  .drivers = {&chibios_usb_driver}
 };
 
 /* Default hooks definitions. */
@@ -82,6 +88,12 @@ void hook_usb_suspend_loop(void) {
     send_remote_wakeup(&USB_DRIVER);
   }
 }
+
+__attribute__((weak))
+host_driver_configuration_t* hook_get_driver_configuration(void) {
+    return &chibios_driver_configuration;
+}
+
 
 /* TESTING
  * Amber LED blinker thread, times are in milliseconds.
@@ -115,16 +127,28 @@ int main(void) {
   // TESTING
   // chThdCreateStatic(waBlinkerThread, sizeof(waBlinkerThread), NORMALPRIO, blinkerThread, NULL);
 
-  chibios_driver.init();
+  host_driver_configuration_t* dc = hook_get_driver_configuration();
+
+  for (int i=0; i < dc->num_drivers; i++) {
+    dc->drivers[i]->init();
+  }
 
   /* init printf */
   init_printf(NULL,sendchar_pf);
 
   hook_early_init();
 
-  /* Wait until the USB is active */
-  while(!chibios_driver.is_connected())
+  /* Wait until the the host driver is connected */
+  host_driver_t* selected_driver = NULL;
+  while(selected_driver == NULL){
+    for (int i=0; i<dc->num_drivers; i++) {
+        if (dc->drivers[i]->is_connected()) {
+            selected_driver = dc->drivers[i];
+            break;
+        }
+    }
     chThdSleepMilliseconds(50);
+  }
 
   /* Do need to wait here!
    * Otherwise the next print might start a transfer on console EP
@@ -137,7 +161,7 @@ int main(void) {
 
   /* init TMK modules */
   keyboard_init();
-  host_set_driver(&chibios_driver);
+  host_set_driver(selected_driver);
 
 #ifdef SLEEP_LED_ENABLE
   sleep_led_init();
