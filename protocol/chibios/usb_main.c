@@ -1038,6 +1038,18 @@ void init_usb_driver(USBDriver *usbp) {
 #endif
 }
 
+void init_driver(void) {
+  init_usb_driver(&USB_DRIVER);
+}
+
+bool is_usb_connected(void) {
+  return USB_DRIVER.state == USB_ACTIVE;
+}
+
+bool is_usb_suspended(void) {
+    return USB_DRIVER.state == USB_SUSPENDED;
+}
+
 /*
  * Send remote wakeup packet
  * Note: should not be called from ISR

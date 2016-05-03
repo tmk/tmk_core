@@ -44,6 +44,10 @@
  */
 
 /* declarations */
+void init_driver(void);
+bool is_usb_connected(void);
+bool is_usb_suspended(void);
+
 uint8_t keyboard_leds(void);
 void send_keyboard(report_keyboard_t *report);
 void send_mouse(report_mouse_t *report);
@@ -52,6 +56,9 @@ void send_consumer(uint16_t data);
 
 /* host struct */
 host_driver_t chibios_driver = {
+  init_driver,
+  is_usb_connected,
+  is_usb_suspended,
   keyboard_leds,
   send_keyboard,
   send_mouse,
@@ -108,8 +115,7 @@ int main(void) {
   // TESTING
   // chThdCreateStatic(waBlinkerThread, sizeof(waBlinkerThread), NORMALPRIO, blinkerThread, NULL);
 
-  /* Init USB */
-  init_usb_driver(&USB_DRIVER);
+  chibios_driver.init();
 
   /* init printf */
   init_printf(NULL,sendchar_pf);
@@ -117,7 +123,7 @@ int main(void) {
   hook_early_init();
 
   /* Wait until the USB is active */
-  while(USB_DRIVER.state != USB_ACTIVE)
+  while(!chibios_driver.is_connected())
     chThdSleepMilliseconds(50);
 
   /* Do need to wait here!
@@ -144,9 +150,9 @@ int main(void) {
   /* Main loop */
   while(true) {
 
-    if(USB_DRIVER.state == USB_SUSPENDED) {
+    if(host_get_driver()->is_suspended()) {
       print("[s]");
-      while(USB_DRIVER.state == USB_SUSPENDED) {
+      while(host_get_driver()->is_suspended()) {
         hook_usb_suspend_loop();
       }
       /* Woken up */
