@@ -1047,7 +1047,7 @@ bool is_usb_connected(void) {
 }
 
 bool is_usb_suspended(void) {
-    return USB_DRIVER.state == USB_SUSPENDED;
+  return USB_DRIVER.state == USB_SUSPENDED;
 }
 
 /*

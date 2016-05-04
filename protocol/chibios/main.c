@@ -48,6 +48,7 @@
 void init_driver(void);
 bool is_usb_connected(void);
 bool is_usb_suspended(void);
+static void usb_poll(void) {}
 
 uint8_t keyboard_leds(void);
 void send_keyboard(report_keyboard_t *report);
@@ -60,6 +61,7 @@ host_driver_t chibios_usb_driver = {
   init_driver,
   is_usb_connected,
   is_usb_suspended,
+  usb_poll,
   keyboard_leds,
   send_keyboard,
   send_mouse,
@@ -83,6 +85,10 @@ __attribute__((weak))
 void hook_usb_suspend_loop(void) {
   /* Do this in the suspended state */
   suspend_power_down(); // on AVR this deep sleeps for 15ms
+  host_driver_configuration_t* dc = hook_get_driver_configuration();
+  for (int i=0; i<dc->num_drivers; i++) {
+    dc->drivers[i]->poll();
+  }
   /* Remote wakeup */
   if((USB_DRIVER.status & 2) && suspend_wakeup_condition()) {
     send_remote_wakeup(&USB_DRIVER);
@@ -142,6 +148,7 @@ int main(void) {
   host_driver_t* selected_driver = NULL;
   while(selected_driver == NULL){
     for (int i=0; i<dc->num_drivers; i++) {
+        dc->drivers[i]->poll();
         if (dc->drivers[i]->is_connected()) {
             selected_driver = dc->drivers[i];
             break;
@@ -174,19 +181,25 @@ int main(void) {
   /* Main loop */
   while(true) {
 
-    if(host_get_driver()->is_suspended()) {
-      print("[s]");
-      while(host_get_driver()->is_suspended()) {
-        hook_usb_suspend_loop();
-      }
-      /* Woken up */
-      // variables have been already cleared
-      send_keyboard_report();
+    host_driver_t* host_driver = host_get_driver();
+    if (host_driver) {
+      if(host_driver->is_suspended()) {
+        print("[s]");
+        while(host_driver->is_suspended()) {
+          hook_usb_suspend_loop();
+        }
+        /* Woken up */
+        // variables have been already cleared
+        send_keyboard_report();
 #ifdef MOUSEKEY_ENABLE
-      mousekey_send();
+        mousekey_send();
 #endif /* MOUSEKEY_ENABLE */
+      }
     }
 
     keyboard_task();
+    for (int i=0; i<dc->num_drivers; i++) {
+      dc->drivers[i]->poll();
+    }
   }
 }
