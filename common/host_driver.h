@@ -26,8 +26,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 typedef struct {
     void (*init)(void);
     bool (*is_connected)(void);
-    bool (*is_suspended) (void);
-    void (*poll) (void);
+    bool (*is_suspended)(void);
+    void (*poll)(void);
+    bool (*is_remote_wakeup_supported)(void);
+    void (*send_remote_wakeup)(void);
     uint8_t (*keyboard_leds)(void);
     void (*send_keyboard)(report_keyboard_t *);
     void (*send_mouse)(report_mouse_t *);

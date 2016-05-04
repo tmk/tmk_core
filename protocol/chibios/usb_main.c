@@ -1050,12 +1050,15 @@ bool is_usb_suspended(void) {
   return USB_DRIVER.state == USB_SUSPENDED;
 }
 
+bool is_remote_wakeup_supported(void) {
+    return USB_DRIVER.status & 2;
+}
+
 /*
  * Send remote wakeup packet
  * Note: should not be called from ISR
  */
-void send_remote_wakeup(USBDriver *usbp) {
-  (void)usbp;
+void send_remote_wakeup(void) {
 #if defined(K20x) || defined(KL2x)
 #if KINETIS_USB_USE_USB0
   USB0->CTL |= USBx_CTL_RESUME;

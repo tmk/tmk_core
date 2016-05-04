@@ -48,6 +48,7 @@
 void init_driver(void);
 bool is_usb_connected(void);
 bool is_usb_suspended(void);
+bool is_remote_wakeup_supported(void);
 static void usb_poll(void) {}
 
 uint8_t keyboard_leds(void);
@@ -62,6 +63,8 @@ host_driver_t chibios_usb_driver = {
   is_usb_connected,
   is_usb_suspended,
   usb_poll,
+  is_remote_wakeup_supported,
+  send_remote_wakeup,
   keyboard_leds,
   send_keyboard,
   send_mouse,
@@ -85,14 +88,6 @@ __attribute__((weak))
 void hook_usb_suspend_loop(void) {
   /* Do this in the suspended state */
   suspend_power_down(); // on AVR this deep sleeps for 15ms
-  host_driver_configuration_t* dc = hook_get_driver_configuration();
-  for (int i=0; i<dc->num_drivers; i++) {
-    dc->drivers[i]->poll();
-  }
-  /* Remote wakeup */
-  if((USB_DRIVER.status & 2) && suspend_wakeup_condition()) {
-    send_remote_wakeup(&USB_DRIVER);
-  }
 }
 
 __attribute__((weak))
@@ -187,6 +182,13 @@ int main(void) {
         print("[s]");
         while(host_driver->is_suspended()) {
           hook_usb_suspend_loop();
+          for (int i=0; i<dc->num_drivers; i++) {
+            dc->drivers[i]->poll();
+          }
+          /* Remote wakeup */
+          if((host_driver->is_remote_wakeup_supported()) && suspend_wakeup_condition()) {
+            host_driver->send_remote_wakeup();
+          }
         }
         /* Woken up */
         // variables have been already cleared
