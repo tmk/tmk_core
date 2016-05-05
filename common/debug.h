@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <stdbool.h>
 #include "print.h"
+#include "preprocessor.h"
 
 
 #ifdef __cplusplus
@@ -89,28 +90,28 @@ extern debug_config_t debug_config;
 
 #else /* NO_DEBUG */
 
-#define dprint(s)                   ((void)0)
-#define dprintln(s)                 ((void)0)
-#define dprintf(fmt, ...)           ((void)0)
-#define dmsg(s)                     ((void)0)
-#define debug(s)                    ((void)0)
-#define debugln(s)                  ((void)0)
-#define debug_msg(s)                ((void)0)
-#define debug_dec(data)             ((void)0)
-#define debug_decs(data)            ((void)0)
-#define debug_hex4(data)            ((void)0)
-#define debug_hex8(data)            ((void)0)
-#define debug_hex16(data)           ((void)0)
-#define debug_hex32(data)           ((void)0)
-#define debug_bin8(data)            ((void)0)
-#define debug_bin16(data)           ((void)0)
-#define debug_bin32(data)           ((void)0)
-#define debug_bin_reverse8(data)    ((void)0)
-#define debug_bin_reverse16(data)   ((void)0)
-#define debug_bin_reverse32(data)   ((void)0)
-#define debug_hex(data)             ((void)0)
-#define debug_bin(data)             ((void)0)
-#define debug_bin_reverse(data)     ((void)0)
+#define dprint(s)                   PP_ALL_UNUSED(s)
+#define dprintln(s)                 PP_ALL_UNUSED(s)
+#define dprintf(...)                PP_ALL_UNUSED(__VA_ARGS__)
+#define dmsg(s)                     PP_ALL_UNUSED(s)
+#define debug(s)                    PP_ALL_UNUSED(s)
+#define debugln(s)                  PP_ALL_UNUSED(s)
+#define debug_msg(s)                PP_ALL_UNUSED(s)
+#define debug_dec(data)             PP_ALL_UNUSED(data)
+#define debug_decs(data)            PP_ALL_UNUSED(data)
+#define debug_hex4(data)            PP_ALL_UNUSED(data)
+#define debug_hex8(data)            PP_ALL_UNUSED(data)
+#define debug_hex16(data)           PP_ALL_UNUSED(data
+#define debug_hex32(data)           PP_ALL_UNUSED(data
+#define debug_bin8(data)            PP_ALL_UNUSED(data
+#define debug_bin16(data)           PP_ALL_UNUSED(data
+#define debug_bin32(data)           PP_ALL_UNUSED(data
+#define debug_bin_reverse8(data)    PP_ALL_UNUSED(data
+#define debug_bin_reverse16(data)   PP_ALL_UNUSED(data
+#define debug_bin_reverse32(data)   PP_ALL_UNUSED(data
+#define debug_hex(data)             PP_ALL_UNUSED(data
+#define debug_bin(data)             PP_ALL_UNUSED(data
+#define debug_bin_reverse(data)     PP_ALL_UNUSED(data
 
 #endif /* NO_DEBUG */
 
