@@ -28,7 +28,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "util.h"
-
+#include "preprocessor.h"
 
 
 
@@ -99,35 +99,35 @@ void print_set_sendchar(int8_t (*print_sendchar_func)(uint8_t));
 
 #else   /* NO_PRINT */
 
-#define xprintf(s,...)              ((void)0)
-#define print(s)                    ((void)0)
-#define println(s)                  ((void)0)
-#define print_set_sendchar(func)    ((void)0)
-#define print_dec(data)             ((void)0)
-#define print_decs(data)            ((void)0)
-#define print_hex4(data)            ((void)0)
-#define print_hex8(data)            ((void)0)
-#define print_hex16(data)           ((void)0)
-#define print_hex32(data)           ((void)0)
-#define print_bin4(data)            ((void)0)
-#define print_bin8(data)            ((void)0)
-#define print_bin16(data)           ((void)0)
-#define print_bin32(data)           ((void)0)
-#define print_bin_reverse8(data)    ((void)0)
-#define print_bin_reverse16(data)   ((void)0)
-#define print_bin_reverse32(data)   ((void)0)
-#define print_val_dec(v)            ((void)0)
-#define print_val_decs(v)           ((void)0)
-#define print_val_hex8(v)           ((void)0)
-#define print_val_hex16(v)          ((void)0)
-#define print_val_hex32(v)          ((void)0)
-#define print_val_bin8(v)           ((void)0)
-#define print_val_bin16(v)          ((void)0)
-#define print_val_bin32(v)          ((void)0)
-#define print_val_bin_reverse8(v)   ((void)0)
-#define print_val_bin_reverse16(v)  ((void)0)
-#define print_val_bin_reverse32(v)  ((void)0)
-#define init_printf(s,ss)           ((void)0)
+#define xprintf(...)                PP_ALL_UNUSED(__VA_ARGS__)
+#define print(s)                    PP_ALL_UNUSED(s)
+#define println(s)                  PP_ALL_UNUSED(s)
+#define print_set_sendchar(func)    PP_ALL_UNUSED(func)
+#define print_dec(data)             PP_ALL_UNUSED(data)
+#define print_decs(data)            PP_ALL_UNUSED(data)
+#define print_hex4(data)            PP_ALL_UNUSED(data)
+#define print_hex8(data)            PP_ALL_UNUSED(data)
+#define print_hex16(data)           PP_ALL_UNUSED(data)
+#define print_hex32(data)           PP_ALL_UNUSED(data)
+#define print_bin4(data)            PP_ALL_UNUSED(data)
+#define print_bin8(data)            PP_ALL_UNUSED(data)
+#define print_bin16(data)           PP_ALL_UNUSED(data)
+#define print_bin32(data)           PP_ALL_UNUSED(data)
+#define print_bin_reverse8(data)    PP_ALL_UNUSED(data)
+#define print_bin_reverse16(data)   PP_ALL_UNUSED(data)
+#define print_bin_reverse32(data)   PP_ALL_UNUSED(data)
+#define print_val_dec(v)            PP_ALL_UNUSED(v)
+#define print_val_decs(v)           PP_ALL_UNUSED(v)
+#define print_val_hex8(v)           PP_ALL_UNUSED(v)
+#define print_val_hex16(v)          PP_ALL_UNUSED(v)
+#define print_val_hex32(v)          PP_ALL_UNUSED(v)
+#define print_val_bin8(v)           PP_ALL_UNUSED(v)
+#define print_val_bin16(v)          PP_ALL_UNUSED(v)
+#define print_val_bin32(v)          PP_ALL_UNUSED(v)
+#define print_val_bin_reverse8(v)   PP_ALL_UNUSED(v)
+#define print_val_bin_reverse16(v)  PP_ALL_UNUSED(v)
+#define print_val_bin_reverse32(v)  PP_ALL_UNUSED(v)
+#define init_printf(s,ss)           PP_ALL_UNUSED(s, ss)
 
 #endif  /* NO_PRINT */
 
