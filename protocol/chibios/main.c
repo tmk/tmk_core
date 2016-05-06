@@ -37,6 +37,7 @@
 #include "suspend.h"
 #include "hook.h"
 #include "chibios.h"
+#include "main.h"
 
 
 /* -------------------------
@@ -95,6 +96,11 @@ host_driver_configuration_t* hook_get_driver_configuration(void) {
     return &chibios_driver_configuration;
 }
 
+void protocol_early_init(void) {
+  /* init printf */
+  init_printf(NULL,sendchar_pf);
+}
+
 
 /* TESTING
  * Amber LED blinker thread, times are in milliseconds.
@@ -127,81 +133,5 @@ int main(void) {
 
   // TESTING
   // chThdCreateStatic(waBlinkerThread, sizeof(waBlinkerThread), NORMALPRIO, blinkerThread, NULL);
-
-  host_driver_configuration_t* dc = hook_get_driver_configuration();
-
-  for (int i=0; i < dc->num_drivers; i++) {
-    dc->drivers[i]->init();
-  }
-
-  /* init printf */
-  init_printf(NULL,sendchar_pf);
-
-  hook_early_init();
-
-  /* Wait until the the host driver is connected */
-  host_driver_t* selected_driver = NULL;
-  while(selected_driver == NULL){
-    for (int i=0; i<dc->num_drivers; i++) {
-        dc->drivers[i]->poll();
-        if (dc->drivers[i]->is_connected()) {
-            selected_driver = dc->drivers[i];
-            break;
-        }
-    }
-    chThdSleepMilliseconds(50);
-  }
-
-  /* Do need to wait here!
-   * Otherwise the next print might start a transfer on console EP
-   * before the USB is completely ready, which sometimes causes
-   * HardFaults.
-   */
-  chThdSleepMilliseconds(50);
-
-  print("USB configured.\n");
-
-  /* init TMK modules */
-  keyboard_init();
-  host_set_driver(selected_driver);
-
-#ifdef SLEEP_LED_ENABLE
-  sleep_led_init();
-#endif
-
-  print("Keyboard start.\n");
-
-  hook_late_init();
-
-  /* Main loop */
-  while(true) {
-
-    host_driver_t* host_driver = host_get_driver();
-    if (host_driver) {
-      if(host_driver->is_suspended()) {
-        print("[s]");
-        while(host_driver->is_suspended()) {
-          hook_usb_suspend_loop();
-          for (int i=0; i<dc->num_drivers; i++) {
-            dc->drivers[i]->poll();
-          }
-          /* Remote wakeup */
-          if((host_driver->is_remote_wakeup_supported()) && suspend_wakeup_condition()) {
-            host_driver->send_remote_wakeup();
-          }
-        }
-        /* Woken up */
-        // variables have been already cleared
-        send_keyboard_report();
-#ifdef MOUSEKEY_ENABLE
-        mousekey_send();
-#endif /* MOUSEKEY_ENABLE */
-      }
-    }
-
-    keyboard_task();
-    for (int i=0; i<dc->num_drivers; i++) {
-      dc->drivers[i]->poll();
-    }
-  }
+  mainfunction();
 }
