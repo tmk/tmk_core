@@ -16,6 +16,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "wait.h"
+#include "action_util.h"
+#ifdef MOUSEKEY_ENABLE
+#include "mousekey.h"
+#endif
 
 void protocol_early_init(void);
 
@@ -29,6 +33,7 @@ void mainfunction(void) {
 
   protocol_early_init();
   hook_early_init();
+  keyboard_setup();
 
   /* Wait until the the host driver is connected */
   host_driver_t* selected_driver = NULL;

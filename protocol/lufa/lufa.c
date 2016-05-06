@@ -52,6 +52,7 @@
 
 #include "descriptor.h"
 #include "lufa.h"
+#include "main.h"
 
 uint8_t keyboard_idle = 0;
 /* 0: Boot Protocol, 1: Report Protocol(default) */
@@ -67,12 +68,31 @@ static void send_keyboard(report_keyboard_t *report);
 static void send_mouse(report_mouse_t *report);
 static void send_system(uint16_t data);
 static void send_consumer(uint16_t data);
+static void setup_usb(void);
+
+static bool is_connected(void);
+static bool is_suspended(void);
+static void poll_usb(void);
+static bool is_remote_wakeup_supported(void);
+static void send_remote_wakeup(void);
+
 host_driver_t lufa_driver = {
+    setup_usb,
+    is_connected,
+    is_suspended,
+    poll_usb,
+    is_remote_wakeup_supported,
+    send_remote_wakeup,
     keyboard_leds,
     send_keyboard,
     send_mouse,
     send_system,
     send_consumer
+};
+
+static host_driver_configuration_t lufa_driver_configuration = {
+  .num_drivers = 1,
+  .drivers = {&lufa_driver}
 };
 
 
@@ -187,6 +207,7 @@ void EVENT_USB_Device_Suspend()
 void EVENT_USB_Device_WakeUp()
 {
     print("[W]");
+    suspend_wakeup_init();
     hook_usb_wakeup();
 }
 
@@ -581,50 +602,47 @@ static void setup_usb(void)
     print_set_sendchar(sendchar);
 }
 
+void protocol_early_init(void) {
+    sei();
+}
+
+void poll_usb(void) {
+#if defined(INTERRUPT_CONTROL_ENDPOINT)
+    ;
+#else
+    USB_USBTask();
+#endif
+}
+
+bool is_connected(void) {
+    return USB_DeviceState == DEVICE_STATE_Configured;
+}
+
+bool is_suspended(void) {
+    return USB_DeviceState == DEVICE_STATE_Suspended;
+}
+
+static bool is_remote_wakeup_supported(void) {
+    return USB_Device_RemoteWakeupEnabled;
+}
+
+static void send_remote_wakeup(void) {
+    USB_Device_SendRemoteWakeup();
+}
+
 int main(void)  __attribute__ ((weak));
 int main(void)
 {
     setup_mcu();
-    hook_early_init();
-    keyboard_setup();
-    setup_usb();
-    sei();
-
-    /* wait for USB startup & debug output */
-    while (USB_DeviceState != DEVICE_STATE_Configured) {
-#if defined(INTERRUPT_CONTROL_ENDPOINT)
-        ;
-#else
-        USB_USBTask();
-#endif
-    }
-    print("USB configured.\n");
-
-    /* init modules */
-    keyboard_init();
-    host_set_driver(&lufa_driver);
-#ifdef SLEEP_LED_ENABLE
-    sleep_led_init();
-#endif
-
-    print("Keyboard start.\n");
-    hook_late_init();
-    while (1) {
-        while (USB_DeviceState == DEVICE_STATE_Suspended) {
-            print("[s]");
-            hook_usb_suspend_loop();
-        }
-
-        keyboard_task();
-
-#if !defined(INTERRUPT_CONTROL_ENDPOINT)
-        USB_USBTask();
-#endif
-    }
+    mainfunction();
 }
 
-
 /* hooks */
+__attribute__((weak))
+host_driver_configuration_t* hook_get_driver_configuration(void) {
+    return &lufa_driver_configuration;
+}
+
 __attribute__((weak))
 void hook_early_init(void) {}
 
@@ -643,15 +661,11 @@ __attribute__((weak))
 void hook_usb_suspend_loop(void)
 {
     suspend_power_down();
-    if (USB_Device_RemoteWakeupEnabled && suspend_wakeup_condition()) {
-            USB_Device_SendRemoteWakeup();
-    }
 }
 
 __attribute__((weak))
 void hook_usb_wakeup(void)
 {
-    suspend_wakeup_init();
 #ifdef SLEEP_LED_ENABLE
     sleep_led_disable();
     // NOTE: converters may not accept this
