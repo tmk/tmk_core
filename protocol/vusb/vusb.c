@@ -481,11 +481,11 @@ USB_PUBLIC usbMsgLen_t usbFunctionDescriptor(struct usbRequest *rq)
             /* interface index */
             switch (rq->wIndex.word) {
                 case 0:
-                    usbMsgPtr = keyboard_hid_report;
+                    usbMsgPtr = (unsigned char *)keyboard_hid_report;
                     len = sizeof(keyboard_hid_report);
                     break;
                 case 1:
-                    usbMsgPtr = mouse_hid_report;
+                    usbMsgPtr = (unsigned char *)mouse_hid_report;
                     len = sizeof(mouse_hid_report);
                     break;
             }
