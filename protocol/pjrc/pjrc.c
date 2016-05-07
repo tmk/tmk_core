@@ -44,7 +44,7 @@ static bool is_suspended(void) { return suspend; }
 static void poll_usb(void) {}
 static bool is_remote_wakeup_supported(void) {return remote_wakeup;}
 
-static host_driver_t driver = {
+host_driver_t pjrc_driver = {
         usb_init,
         is_connected,
         is_suspended,
@@ -58,25 +58,8 @@ static host_driver_t driver = {
         send_consumer
 };
 
-static host_driver_configuration_t driver_configuration = {
-  .num_drivers = 1,
-  .connection_delay = 50,
-  .drivers = {&driver}
-};
-
-host_driver_t *pjrc_driver(void)
-{
-    return &driver;
-}
-
 void protocol_early_init(void) {
     print_set_sendchar(sendchar);
-}
-
-
-__attribute__((weak))
-host_driver_configuration_t* hook_get_driver_configuration(void) {
-    return &driver_configuration;
 }
 
 static uint8_t keyboard_leds(void) {

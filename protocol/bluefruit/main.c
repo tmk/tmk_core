@@ -33,6 +33,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "suspend.h"
 #include "bluefruit.h"
 #include "pjrc.h"
+#include "main.h"
 
 #define CPU_PRESCALE(n)    (CLKPR = 0x80, CLKPR = (n))
 
@@ -52,65 +53,58 @@ int main(void)
     PORTB = _BV(PB0);
 
     print_set_sendchar(sendchar);
+    mainfunction();
+}
 
-    usb_init();
-    _delay_ms(2000);
-    // while (!usb_configured()) /* wait */
+static host_driver_configuration_t driver_configuration = {
+  .num_drivers = 2,
+  .connection_delay = 50,
+  .connection_timeout  = 2000,
+  .drivers = {&pjrc_driver, &bluefruit_driver}
+};
 
-    dprintf("Initializing keyboard...\n");
-    keyboard_init();
-    
-    // This implementation is pretty simplistic... if the USB connection
-    // is not configured, choose the Bluefruit, otherwise use USB
-    // Definitely would prefer to have this driven by an input pin and make
-    // it switch dynamically - BCG
-    if (!usb_configured()) {
-    
-        // Send power to Bluefruit... Adafruit says it takes 27 mA, I think
-        // the pins should provide 40 mA, but just in case I switch the 
-        // Bluefruit using a transistor - BCG
-        DDRB   = _BV(PB6);
-        PORTB |= _BV(PB6);
-    
-        dprintf("Setting host driver to bluefruit...\n");
-        host_set_driver(bluefruit_driver());
+__attribute__((weak))
+host_driver_configuration_t* hook_get_driver_configuration(void) {
+    return &driver_configuration;
+}
 
-        dprintf("Initializing serial...\n");
-        serial_init();
-        
-        // wait an extra second for the PC's operating system
-        // to load drivers and do whatever it does to actually
-        // be ready for input
-        _delay_ms(1000);
+__attribute__((weak))
+void hook_early_init(void) {}
+
+__attribute__((weak))
+void hook_late_init(void)
+{
+    // Enable leds based on the selected driver
+    if(host_get_driver() == &bluefruit_driver) {
+        // Green
         PORTD = ~_BV(PD5);
-        dprintf("Starting main loop");
-        while (1) {
-            keyboard_task();
-        }
-
-    } else {
-
-        // I'm not smart enough to get this done with LUFA - BCG
-        dprintf("Setting host driver to PJRC...\n");
-        host_set_driver(pjrc_driver());
-#ifdef SLEEP_LED_ENABLE
-    sleep_led_init();
-#endif
-        // wait an extra second for the PC's operating system
-        // to load drivers and do whatever it does to actually
-        // be ready for input
-        _delay_ms(1000);
-        PORTB = ~_BV(PB0);
-        dprintf("Starting main loop");
-        while (1) {
-            while (suspend) {
-                suspend_power_down();
-                if (remote_wakeup && suspend_wakeup_condition()) {
-                    usb_remote_wakeup();
-                }
-            }
-            keyboard_task(); 
-        }
     }
+    else {
+        // Yellow
+        PORTB = ~_BV(PB0);
+    }
+}
 
+ __attribute__((weak))
+void hook_usb_suspend_entry(void)
+{
+#ifdef SLEEP_LED_ENABLE
+    sleep_led_enable();
+#endif
+}
+
+__attribute__((weak))
+void hook_usb_suspend_loop(void)
+{
+    suspend_power_down();
+}
+
+__attribute__((weak))
+void hook_usb_wakeup(void)
+{
+#ifdef SLEEP_LED_ENABLE
+    sleep_led_disable();
+    // NOTE: converters may not accept this
+    led_set(host_keyboard_leds());
+#endif
 }

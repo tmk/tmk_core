@@ -168,6 +168,7 @@ static host_driver_t driver = {
 static host_driver_configuration_t driver_configuration = {
   .num_drivers = 1,
   .connection_delay = 1,
+  .connection_timeout = 0,
   .drivers = {&driver}
 };
 

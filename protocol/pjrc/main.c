@@ -32,3 +32,15 @@ int main(void)
     CPU_PRESCALE(0);
     mainfunction();
 }
+
+static host_driver_configuration_t driver_configuration = {
+  .num_drivers = 1,
+  .connection_delay = 50,
+  .connection_timeout = 0,
+  .drivers = {&pjrc_driver}
+};
+
+__attribute__((weak))
+host_driver_configuration_t* hook_get_driver_configuration(void) {
+    return &driver_configuration;
+}

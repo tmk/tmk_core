@@ -34,6 +34,10 @@ void mainfunction(void) {
 
   for (int i=0; i < dc->num_drivers; i++) {
     dc->drivers[i]->init();
+    // Only initialize the first driver if a connection timeout is specified
+    if (dc->connection_timeout > 0) {
+        break;
+    }
   }
 
   protocol_early_init();
@@ -42,12 +46,35 @@ void mainfunction(void) {
 
   /* Wait until the the host driver is connected */
   host_driver_t* selected_driver = NULL;
+  int driver_nr = 0;
+  timer_init();
+  uint16_t last_time = timer_read();
   while(selected_driver == NULL){
-    for (int i=0; i<dc->num_drivers; i++) {
-        dc->drivers[i]->poll();
-        if (dc->drivers[i]->is_connected()) {
-            selected_driver = dc->drivers[i];
-            break;
+    if (dc->connection_timeout > 0) {
+        // If a connection timeout is specified, only try to one driver at a time
+        dc->drivers[driver_nr]->poll();
+        if (dc->drivers[driver_nr]->is_connected()) {
+            selected_driver = dc->drivers[driver_nr];
+        }
+        else {
+            // If there's a timeout, continue with the next driver
+            uint16_t elapsed = timer_elapsed(last_time);
+            if (elapsed > dc->connection_timeout) {
+                if (driver_nr < dc->num_drivers  - 1) {
+                    driver_nr++;
+                    last_time = timer_read();
+                }
+            }
+        }
+    }
+    else {
+        // No connection timeout specified, try all drivers in parallel
+        for (int i=0; i<dc->num_drivers; i++) {
+            dc->drivers[i]->poll();
+            if (dc->drivers[i]->is_connected()) {
+                selected_driver = dc->drivers[i];
+                break;
+            }
         }
     }
     wait_ms_variable(dc->connection_delay);

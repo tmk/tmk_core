@@ -40,6 +40,10 @@ typedef struct {
 typedef struct {
     int num_drivers;
     int connection_delay; // The wait time between connection retries
+    // If a timeout is specified(>0) then the the connection will continue
+    // with the next driver upon timeout. Otherwise all drivers are being
+    // connected in parallel
+    int connection_timeout;
     host_driver_t* drivers[4];
 } host_driver_configuration_t;
 

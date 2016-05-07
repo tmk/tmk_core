@@ -93,6 +93,7 @@ host_driver_t lufa_driver = {
 static host_driver_configuration_t lufa_driver_configuration = {
   .num_drivers = 1,
   .connection_delay = 50,
+  .connection_timeout = 0,
   .drivers = {&lufa_driver}
 };
 

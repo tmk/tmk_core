@@ -26,6 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "host_driver.h"
 #include "serial.h"
 #include "bluefruit.h"
+#include "timer.h"
 
 #define BLUEFRUIT_TRACE_SERIAL 1
 
@@ -43,14 +44,14 @@ void bluefruit_keyboard_print_report(report_keyboard_t *report)
 }
 
 #ifdef BLUEFRUIT_TRACE_SERIAL
-static void bluefruit_trace_header()
+static void bluefruit_trace_header(void)
 {
     dprintf("+------------------------------------+\n");
     dprintf("| HID report to Bluefruit via serial |\n");
     dprintf("+------------------------------------+\n|");
 }
 
-static void bluefruit_trace_footer()
+static void bluefruit_trace_footer(void)
 {
     dprintf("|\n+------------------------------------+\n\n");
 }
@@ -76,18 +77,44 @@ static void send_mouse(report_mouse_t *report);
 static void send_system(uint16_t data);
 static void send_consumer(uint16_t data);
 
-static host_driver_t driver = {
+static uint16_t connection_start_time = 0;
+
+void init_bluefruit(void) {
+    // Send power to Bluefruit... Adafruit says it takes 27 mA, I think
+    // the pins should provide 40 mA, but just in case I switch the
+    // Bluefruit using a transistor - BCG
+    dprintf("Starting bluefruit connection...\n");
+    DDRB   = _BV(PB6);
+    PORTB |= _BV(PB6);
+    dprintf("Initializing serial...\n");
+    serial_init();
+    connection_start_time = timer_read();
+}
+
+static bool is_bluefruit_connected(void)
+{
+    return timer_elapsed(connection_start_time) > 1000;
+}
+
+static bool is_bluefruit_suspended(void) { return false; }
+static void poll_bluefruit(void) {}
+static bool is_bluefruit_remote_wakeup_supported(void) {return false; }
+static void send_bluefruit_remote_wakeup(void) {}
+
+
+host_driver_t bluefruit_driver = {
+        init_bluefruit,
+        is_bluefruit_connected,
+        is_bluefruit_suspended,
+        poll_bluefruit,
+        is_bluefruit_remote_wakeup_supported,
+        send_bluefruit_remote_wakeup,
         keyboard_leds,
         send_keyboard,
         send_mouse,
         send_system,
         send_consumer
 };
-
-host_driver_t *bluefruit_driver(void)
-{
-    return &driver;
-}
 
 static uint8_t keyboard_leds(void) {
     return bluefruit_keyboard_leds;
