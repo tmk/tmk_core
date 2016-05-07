@@ -101,17 +101,17 @@ extern debug_config_t debug_config;
 #define debug_decs(data)            PP_ALL_UNUSED(data)
 #define debug_hex4(data)            PP_ALL_UNUSED(data)
 #define debug_hex8(data)            PP_ALL_UNUSED(data)
-#define debug_hex16(data)           PP_ALL_UNUSED(data
-#define debug_hex32(data)           PP_ALL_UNUSED(data
-#define debug_bin8(data)            PP_ALL_UNUSED(data
-#define debug_bin16(data)           PP_ALL_UNUSED(data
-#define debug_bin32(data)           PP_ALL_UNUSED(data
-#define debug_bin_reverse8(data)    PP_ALL_UNUSED(data
-#define debug_bin_reverse16(data)   PP_ALL_UNUSED(data
-#define debug_bin_reverse32(data)   PP_ALL_UNUSED(data
-#define debug_hex(data)             PP_ALL_UNUSED(data
-#define debug_bin(data)             PP_ALL_UNUSED(data
-#define debug_bin_reverse(data)     PP_ALL_UNUSED(data
+#define debug_hex16(data)           PP_ALL_UNUSED(data)
+#define debug_hex32(data)           PP_ALL_UNUSED(data)
+#define debug_bin8(data)            PP_ALL_UNUSED(data)
+#define debug_bin16(data)           PP_ALL_UNUSED(data)
+#define debug_bin32(data)           PP_ALL_UNUSED(data)
+#define debug_bin_reverse8(data)    PP_ALL_UNUSED(data)
+#define debug_bin_reverse16(data)   PP_ALL_UNUSED(data)
+#define debug_bin_reverse32(data)   PP_ALL_UNUSED(data)
+#define debug_hex(data)             PP_ALL_UNUSED(data)
+#define debug_bin(data)             PP_ALL_UNUSED(data)
+#define debug_bin_reverse(data)     PP_ALL_UNUSED(data)
 
 #endif /* NO_DEBUG */
 
