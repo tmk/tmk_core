@@ -75,6 +75,7 @@ host_driver_t chibios_usb_driver = {
 
 host_driver_configuration_t chibios_driver_configuration = {
   .num_drivers = 1,
+  .connection_delay = 50,
   .drivers = {&chibios_usb_driver}
 };
 

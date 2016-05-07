@@ -16,6 +16,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include <stdint.h>
+#include <avr/wdt.h>
+#include <util/delay.h>
+#include <avr/interrupt.h>
 #include "usbdrv.h"
 #include "usbconfig.h"
 #include "host.h"
@@ -69,7 +72,92 @@ static void send_mouse(report_mouse_t *report);
 static void send_system(uint16_t data);
 static void send_consumer(uint16_t data);
 
+// The connection could probably be done in a smarter way
+// for now emulate the old behavior of waiting for a fixed time
+// for USB connect
+// The old behavior was taken from main.c of USBaspLoader
+static bool connected = false;
+static uint8_t connection_time = 0;
+static bool is_connected(void) {
+    return connected && usbConfiguration && usbInterruptIsReady();
+}
+
+static bool suspended = false;
+
+static void poll_usb(void) {
+#if USB_COUNT_SOF
+    static uint16_t last_timer = timer_read();
+#endif
+    if (!connected) {
+        if (connection_time == 0) {
+            /* enforce USB re-enumerate: */
+            usbDeviceDisconnect();  /* do this while interrupts are disabled */
+        }
+        --connection_time;
+        if (connection_time) { /* fake USB disconnect for > 250 ms */
+            wdt_reset();
+        }
+        else {
+            usbDeviceConnect();
+            connected = true;
+            sei();
+        }
+    }
+    else {
+#if USB_COUNT_SOF
+        if (usbSofCount != 0) {
+            if (suspended) {
+                suspend_wakeup_init();
+                hook_usb_wakeup();
+            }
+            suspended = false;
+            usbSofCount = 0;
+            last_timer = timer_read();
+        } else {
+            // Suspend when no SOF in 3ms-10ms(7.1.7.4 Suspending of USB1.1)
+            if (timer_elapsed(last_timer) > 5) {
+                if (!suspended) {
+                    hook_usb_suspend_entry();
+                }
+                suspended = true;
+/*
+                uart_putchar('S');
+                _delay_ms(1);
+                cli();
+                set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+                sleep_enable();
+                sleep_bod_disable();
+                sei();
+                sleep_cpu();
+                sleep_disable();
+                _delay_ms(10);
+                uart_putchar('W');
+*/
+            }
+        }
+#endif
+        if (!suspended) {
+            usbPoll();
+            vusb_transfer_keyboard();
+        }
+    }
+}
+
+static bool is_suspended(void) { return suspended; }
+static bool is_remote_wakeup_supported(void) {return false;}
+static void usb_remote_wakeup(void) {}
+
+void protocol_early_init(void) {
+}
+
+
 static host_driver_t driver = {
+        usbInit,
+        is_connected,
+        is_suspended,
+        poll_usb,
+        is_remote_wakeup_supported,
+        usb_remote_wakeup,
         keyboard_leds,
         send_keyboard,
         send_mouse,
@@ -77,10 +165,22 @@ static host_driver_t driver = {
         send_consumer
 };
 
+static host_driver_configuration_t driver_configuration = {
+  .num_drivers = 1,
+  .connection_delay = 1,
+  .drivers = {&driver}
+};
+
 host_driver_t *vusb_driver(void)
 {
     return &driver;
 }
+
+__attribute__((weak))
+host_driver_configuration_t* hook_get_driver_configuration(void) {
+    return &driver_configuration;
+}
+
 
 static uint8_t keyboard_leds(void) {
     return vusb_keyboard_leds;

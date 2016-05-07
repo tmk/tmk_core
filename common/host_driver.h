@@ -39,6 +39,7 @@ typedef struct {
 
 typedef struct {
     int num_drivers;
+    int connection_delay; // The wait time between connection retries
     host_driver_t* drivers[4];
 } host_driver_configuration_t;
 

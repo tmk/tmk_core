@@ -50,7 +50,7 @@ void mainfunction(void) {
             break;
         }
     }
-    wait_ms(50);
+    wait_ms_variable(dc->connection_delay);
   }
 
   /* On ChibiOS
