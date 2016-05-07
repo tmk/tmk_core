@@ -2,7 +2,7 @@ VUSB_DIR = protocol/vusb
 
 OPT_DEFS += -DPROTOCOL_VUSB
 
-SRC +=	$(VUSB_DIR)/main.c \
+SRC +=	$(VUSB_DIR)/vusbhooks.c \
 	$(VUSB_DIR)/vusb.c \
 	$(VUSB_DIR)/usbdrv/usbdrv.c \
 	$(VUSB_DIR)/usbdrv/usbdrvasm.S \

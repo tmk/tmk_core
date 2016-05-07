@@ -147,11 +147,7 @@ static bool is_suspended(void) { return suspended; }
 static bool is_remote_wakeup_supported(void) {return false;}
 static void usb_remote_wakeup(void) {}
 
-void protocol_early_init(void) {
-}
-
-
-static host_driver_t driver = {
+host_driver_t vusb_driver = {
         usbInit,
         is_connected,
         is_suspended,
@@ -164,24 +160,6 @@ static host_driver_t driver = {
         send_system,
         send_consumer
 };
-
-static host_driver_configuration_t driver_configuration = {
-  .num_drivers = 1,
-  .connection_delay = 1,
-  .connection_timeout = 0,
-  .drivers = {&driver}
-};
-
-host_driver_t *vusb_driver(void)
-{
-    return &driver;
-}
-
-__attribute__((weak))
-host_driver_configuration_t* hook_get_driver_configuration(void) {
-    return &driver_configuration;
-}
-
 
 static uint8_t keyboard_leds(void) {
     return vusb_keyboard_leds;

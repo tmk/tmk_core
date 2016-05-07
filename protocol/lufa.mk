@@ -14,6 +14,7 @@ else
 endif
 
 LUFA_SRC = $(LUFA_DIR)/lufa.c \
+	   $(LUFA_DIR)/lufahooks.c \
 	   $(LUFA_DIR)/descriptor.c \
 	   $(LUFA_SRC_USB)
 

@@ -1,7 +1,7 @@
 BLUEFRUIT_DIR = protocol/bluefruit
 PJRC_DIR = protocol/pjrc
 
-SRC +=	$(BLUEFRUIT_DIR)/main.c \
+SRC +=	$(BLUEFRUIT_DIR)/bluefruithooks.c \
 	$(BLUEFRUIT_DIR)/bluefruit.c \
 	serial_uart.c \
 	$(PJRC_DIR)/pjrc.c \

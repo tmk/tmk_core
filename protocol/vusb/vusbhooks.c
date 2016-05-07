@@ -8,19 +8,31 @@
  * This Revision: $Id: main.c 790 2010-05-30 21:00:26Z cs $
  */
 #include <avr/wdt.h>
+#include "vusb.h"
 #include "host.h"
 #include "uart.h"
-#include "main.h"
+#include "hook.h"
+#include "suspend.h"
 
 #define UART_BAUD_RATE 115200
 
-int main(void)
-{
+static host_driver_configuration_t driver_configuration = {
+  .num_drivers = 1,
+  .connection_delay = 1,
+  .connection_timeout = 0,
+  .drivers = {&vusb_driver}
+};
+
+__attribute__((weak))
+host_driver_configuration_t* hook_get_driver_configuration(void) {
+    return &driver_configuration;
+}
+
+void hook_platform_init(void) {
     CLKPR = 0x80, CLKPR = 0;
 #ifndef NO_UART
     uart_init(UART_BAUD_RATE);
 #endif
-    mainfunction();
 }
 
 __attribute__((weak))

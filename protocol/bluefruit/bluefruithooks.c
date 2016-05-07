@@ -33,7 +33,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "suspend.h"
 #include "bluefruit.h"
 #include "pjrc.h"
-#include "main.h"
 
 #define CPU_PRESCALE(n)    (CLKPR = 0x80, CLKPR = (n))
 
@@ -41,8 +40,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define BLUEFRUIT_HOST_DRIVER   1
 #define PJRC_HOST_DRIVER        2
 
-int main(void)
-{   
+void hook_platform_init(void) {
 
     CPU_PRESCALE(0);
 
@@ -53,7 +51,6 @@ int main(void)
     PORTB = _BV(PB0);
 
     print_set_sendchar(sendchar);
-    mainfunction();
 }
 
 static host_driver_configuration_t driver_configuration = {

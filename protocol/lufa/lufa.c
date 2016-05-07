@@ -52,7 +52,6 @@
 
 #include "descriptor.h"
 #include "lufa.h"
-#include "main.h"
 
 uint8_t keyboard_idle = 0;
 /* 0: Boot Protocol, 1: Report Protocol(default) */
@@ -89,14 +88,6 @@ host_driver_t lufa_driver = {
     send_system,
     send_consumer
 };
-
-static host_driver_configuration_t lufa_driver_configuration = {
-  .num_drivers = 1,
-  .connection_delay = 50,
-  .connection_timeout = 0,
-  .drivers = {&lufa_driver}
-};
-
 
 /*******************************************************************************
  * Console
@@ -578,20 +569,6 @@ int8_t sendchar(uint8_t c)
 }
 #endif
 
-
-/*******************************************************************************
- * main
- ******************************************************************************/
-static void setup_mcu(void)
-{
-    /* Disable watchdog if enabled by bootloader/fuses */
-    MCUSR &= ~(1 << WDRF);
-    wdt_disable();
-
-    /* Disable clock division */
-    clock_prescale_set(clock_div_1);
-}
-
 static void setup_usb(void)
 {
     // Leonardo needs. Without this USB device is not recognized.
@@ -602,9 +579,6 @@ static void setup_usb(void)
     // for Console_Task
     USB_Device_EnableSOFEvents();
     print_set_sendchar(sendchar);
-}
-
-void protocol_early_init(void) {
     sei();
 }
 
@@ -630,47 +604,4 @@ static bool is_remote_wakeup_supported(void) {
 
 static void send_remote_wakeup(void) {
     USB_Device_SendRemoteWakeup();
-}
-
-int main(void)  __attribute__ ((weak));
-int main(void)
-{
-    setup_mcu();
-    mainfunction();
-}
-
-/* hooks */
-__attribute__((weak))
-host_driver_configuration_t* hook_get_driver_configuration(void) {
-    return &lufa_driver_configuration;
-}
-
-__attribute__((weak))
-void hook_early_init(void) {}
-
-__attribute__((weak))
-void hook_late_init(void) {}
-
- __attribute__((weak))
-void hook_usb_suspend_entry(void)
-{
-#ifdef SLEEP_LED_ENABLE
-    sleep_led_enable();
-#endif
-}
-
-__attribute__((weak))
-void hook_usb_suspend_loop(void)
-{
-    suspend_power_down();
-}
-
-__attribute__((weak))
-void hook_usb_wakeup(void)
-{
-#ifdef SLEEP_LED_ENABLE
-    sleep_led_disable();
-    // NOTE: converters may not accept this
-    led_set(host_keyboard_leds());
-#endif
 }

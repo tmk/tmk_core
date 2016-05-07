@@ -58,10 +58,6 @@ host_driver_t pjrc_driver = {
         send_consumer
 };
 
-void protocol_early_init(void) {
-    print_set_sendchar(sendchar);
-}
-
 static uint8_t keyboard_leds(void) {
     return usb_keyboard_leds;
 }
@@ -89,35 +85,5 @@ static void send_consumer(uint16_t data)
 {
 #ifdef EXTRAKEY_ENABLE
     usb_extra_consumer_send(data);
-#endif
-}
-
-__attribute__((weak))
-void hook_early_init(void) {}
-
-__attribute__((weak))
-void hook_late_init(void) {}
-
- __attribute__((weak))
-void hook_usb_suspend_entry(void)
-{
-#ifdef SLEEP_LED_ENABLE
-    sleep_led_enable();
-#endif
-}
-
-__attribute__((weak))
-void hook_usb_suspend_loop(void)
-{
-    suspend_power_down();
-}
-
-__attribute__((weak))
-void hook_usb_wakeup(void)
-{
-#ifdef SLEEP_LED_ENABLE
-    sleep_led_disable();
-    // NOTE: converters may not accept this
-    led_set(host_keyboard_leds());
 #endif
 }

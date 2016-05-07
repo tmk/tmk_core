@@ -1,5 +1,6 @@
 COMMON_DIR = common
 SRC +=	$(COMMON_DIR)/host.c \
+	$(COMMON_DIR)/main.c \
 	$(COMMON_DIR)/keyboard.c \
 	$(COMMON_DIR)/action.c \
 	$(COMMON_DIR)/action_tapping.c \

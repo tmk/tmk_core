@@ -22,15 +22,20 @@
  */
 
 #include <avr/io.h>
-#include "main.h"
+#include "hook.h"
+#include "pjrc.h"
+#include "suspend.h"
+#include "host.h"
+#ifdef SLEEP_LED_ENABLE
+#include "sleep_led.h"
+#endif
 
 #define CPU_PRESCALE(n)    (CLKPR = 0x80, CLKPR = (n))
 
-int main(void)
-{
+void hook_platform_init(void) {
     // set for 16 MHz clock
     CPU_PRESCALE(0);
-    mainfunction();
+    print_set_sendchar(sendchar);
 }
 
 static host_driver_configuration_t driver_configuration = {
@@ -43,4 +48,34 @@ static host_driver_configuration_t driver_configuration = {
 __attribute__((weak))
 host_driver_configuration_t* hook_get_driver_configuration(void) {
     return &driver_configuration;
+}
+
+__attribute__((weak))
+void hook_early_init(void) {}
+
+__attribute__((weak))
+void hook_late_init(void) {}
+
+ __attribute__((weak))
+void hook_usb_suspend_entry(void)
+{
+#ifdef SLEEP_LED_ENABLE
+    sleep_led_enable();
+#endif
+}
+
+__attribute__((weak))
+void hook_usb_suspend_loop(void)
+{
+    suspend_power_down();
+}
+
+__attribute__((weak))
+void hook_usb_wakeup(void)
+{
+#ifdef SLEEP_LED_ENABLE
+    sleep_led_disable();
+    // NOTE: converters may not accept this
+    led_set(host_keyboard_leds());
+#endif
 }

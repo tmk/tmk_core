@@ -142,7 +142,7 @@ CSRC = $(STARTUPSRC) \
        $(BOARDSRC) \
        $(CHIBIOS)/os/hal/lib/streams/chprintf.c \
        $(TMK_DIR)/protocol/chibios/usb_main.c \
-       $(TMK_DIR)/protocol/chibios/main.c \
+       $(TMK_DIR)/protocol/chibios/chibioshooks.c \
        $(SRC)
 
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global

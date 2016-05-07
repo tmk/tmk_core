@@ -22,14 +22,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "sleep_led.h"
 #include "suspend.h"
 #include "print.h"
+#include "timer.h"
+#include "host.h"
 #ifdef MOUSEKEY_ENABLE
 #include "mousekey.h"
 #endif
 
-void protocol_early_init(void);
-
-
-void mainfunction(void) {
+int main(void) {
+  hook_platform_init();
   host_driver_configuration_t* dc = hook_get_driver_configuration();
 
   for (int i=0; i < dc->num_drivers; i++) {
@@ -40,7 +40,6 @@ void mainfunction(void) {
     }
   }
 
-  protocol_early_init();
   hook_early_init();
   keyboard_setup();
 

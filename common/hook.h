@@ -29,7 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /* Called once, at the program start. */
 /* Default behaviour: returns a configuration for the default driver. */
 host_driver_configuration_t* hook_get_driver_configuration(void);
-
+void hook_platform_init(void);
 
 /* Called once, very early stage of initialization, just after processor startup. */
 /* Default behaviour: do nothing. */

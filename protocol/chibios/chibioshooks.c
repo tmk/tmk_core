@@ -37,7 +37,6 @@
 #include "suspend.h"
 #include "hook.h"
 #include "chibios.h"
-#include "main.h"
 
 
 /* -------------------------
@@ -98,11 +97,12 @@ host_driver_configuration_t* hook_get_driver_configuration(void) {
     return &chibios_driver_configuration;
 }
 
-void protocol_early_init(void) {
-  /* init printf */
+void hook_platform_init(void) {
+  /* ChibiOS/RT init */
+  halInit();
+  chSysInit();
   init_printf(NULL,sendchar_pf);
 }
-
 
 /* TESTING
  * Amber LED blinker thread, times are in milliseconds.
@@ -125,15 +125,3 @@ void protocol_early_init(void) {
 // }
 
 
-
-/* Main thread
- */
-int main(void) {
-  /* ChibiOS/RT init */
-  halInit();
-  chSysInit();
-
-  // TESTING
-  // chThdCreateStatic(waBlinkerThread, sizeof(waBlinkerThread), NORMALPRIO, blinkerThread, NULL);
-  mainfunction();
-}
