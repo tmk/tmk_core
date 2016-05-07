@@ -15,8 +15,13 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <stddef.h>
+#include "hook.h"
 #include "wait.h"
 #include "action_util.h"
+#include "sleep_led.h"
+#include "suspend.h"
+#include "print.h"
 #ifdef MOUSEKEY_ENABLE
 #include "mousekey.h"
 #endif

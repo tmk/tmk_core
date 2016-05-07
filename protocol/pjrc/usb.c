@@ -34,12 +34,10 @@
 #include "led.h"
 #include "print.h"
 #include "util.h"
-#ifdef SLEEP_LED_ENABLE
-#include "sleep_led.h"
-#endif
 #include "suspend.h"
 #include "action.h"
 #include "action_util.h"
+#include "hook.h"
 
 
 /**************************************************************************
@@ -653,24 +651,17 @@ ISR(USB_GEN_vect)
         intbits = UDINT;
         UDINT = 0;
         if ((intbits & (1<<SUSPI)) && (UDIEN & (1<<SUSPE)) && usb_configuration) {
-#ifdef SLEEP_LED_ENABLE
-            sleep_led_enable();
-#endif
+            hook_usb_suspend_entry();
             UDIEN &= ~(1<<SUSPE);
             UDIEN |= (1<<WAKEUPE);
             suspend = true;
         }
         if ((intbits & (1<<WAKEUPI)) && (UDIEN & (1<<WAKEUPE)) && usb_configuration) {
             suspend_wakeup_init();
-#ifdef SLEEP_LED_ENABLE
-            sleep_led_disable();
-            // NOTE: converters may not accept this
-            led_set(host_keyboard_leds());
-#endif
-
             UDIEN |= (1<<SUSPE);
             UDIEN &= ~(1<<WAKEUPE);
             suspend = false;
+            hook_usb_wakeup();
         }
         if (intbits & (1<<EORSTI)) {
 		UENUM = 0;

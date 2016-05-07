@@ -21,54 +21,14 @@
  * THE SOFTWARE.
  */
 
-#include <stdbool.h>
 #include <avr/io.h>
-#include <avr/interrupt.h>
-#include <avr/wdt.h>
-#include <util/delay.h>
-#include "keyboard.h"
-#include "usb.h"
-#include "matrix.h"
-#include "print.h"
-#include "debug.h"
-#include "sendchar.h"
-#include "util.h"
-#include "suspend.h"
-#include "host.h"
-#include "pjrc.h"
-
+#include "main.h"
 
 #define CPU_PRESCALE(n)    (CLKPR = 0x80, CLKPR = (n))
-
 
 int main(void)
 {
     // set for 16 MHz clock
     CPU_PRESCALE(0);
-
-    keyboard_setup();
-
-    // Initialize the USB, and then wait for the host to set configuration.
-    // If the Teensy is powered without a PC connected to the USB port,
-    // this will wait forever.
-    usb_init();
-    while (!usb_configured()) /* wait */ ;
-
-    print_set_sendchar(sendchar);
-
-    keyboard_init();
-    host_set_driver(pjrc_driver());
-#ifdef SLEEP_LED_ENABLE
-    sleep_led_init();
-#endif
-    while (1) {
-        while (suspend) {
-            suspend_power_down();
-            if (remote_wakeup && suspend_wakeup_condition()) {
-                usb_remote_wakeup();
-            }
-        }
-
-        keyboard_task(); 
-    }
+    mainfunction();
 }

@@ -21,6 +21,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "usb_extra.h"
 #include "host_driver.h"
 #include "pjrc.h"
+#include "hook.h"
+#include "suspend.h"
+#include "sendchar.h"
+#include "print.h"
+#ifdef SLEEP_LED_ENABLE
+#include "sleep_led.h"
+#endif
 
 
 /*------------------------------------------------------------------*
@@ -32,7 +39,18 @@ static void send_mouse(report_mouse_t *report);
 static void send_system(uint16_t data);
 static void send_consumer(uint16_t data);
 
+static bool is_connected(void) { return usb_configured(); }
+static bool is_suspended(void) { return suspend; }
+static void poll_usb(void) {}
+static bool is_remote_wakeup_supported(void) {return remote_wakeup;}
+
 static host_driver_t driver = {
+        usb_init,
+        is_connected,
+        is_suspended,
+        poll_usb,
+        is_remote_wakeup_supported,
+        usb_remote_wakeup,
         keyboard_leds,
         send_keyboard,
         send_mouse,
@@ -40,9 +58,24 @@ static host_driver_t driver = {
         send_consumer
 };
 
+static host_driver_configuration_t driver_configuration = {
+  .num_drivers = 1,
+  .drivers = {&driver}
+};
+
 host_driver_t *pjrc_driver(void)
 {
     return &driver;
+}
+
+void protocol_early_init(void) {
+    print_set_sendchar(sendchar);
+}
+
+
+__attribute__((weak))
+host_driver_configuration_t* hook_get_driver_configuration(void) {
+    return &driver_configuration;
 }
 
 static uint8_t keyboard_leds(void) {
@@ -72,5 +105,35 @@ static void send_consumer(uint16_t data)
 {
 #ifdef EXTRAKEY_ENABLE
     usb_extra_consumer_send(data);
+#endif
+}
+
+__attribute__((weak))
+void hook_early_init(void) {}
+
+__attribute__((weak))
+void hook_late_init(void) {}
+
+ __attribute__((weak))
+void hook_usb_suspend_entry(void)
+{
+#ifdef SLEEP_LED_ENABLE
+    sleep_led_enable();
+#endif
+}
+
+__attribute__((weak))
+void hook_usb_suspend_loop(void)
+{
+    suspend_power_down();
+}
+
+__attribute__((weak))
+void hook_usb_wakeup(void)
+{
+#ifdef SLEEP_LED_ENABLE
+    sleep_led_disable();
+    // NOTE: converters may not accept this
+    led_set(host_keyboard_leds());
 #endif
 }
