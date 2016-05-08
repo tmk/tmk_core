@@ -29,6 +29,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /* Called once, at the program start. */
 /* Default behaviour: returns a configuration for the default driver. */
 host_driver_configuration_t* hook_get_driver_configuration(void);
+
+/* Called immediately at the program start */
+/* Typically not overridden by the user, use hook_early_init instead. */
+/* Different platforms like lufa, prjrc and chibios, typically implement this */
+/* themselves */
 void hook_platform_init(void);
 
 /* Called once, very early stage of initialization, just after processor startup. */

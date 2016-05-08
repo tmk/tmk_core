@@ -57,6 +57,7 @@ static host_driver_configuration_t driver_configuration = {
   .num_drivers = 2,
   .connection_delay = 50,
   .connection_timeout  = 2000,
+  .try_connect_all = false,
   .drivers = {&pjrc_driver, &bluefruit_driver}
 };
 
