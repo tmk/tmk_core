@@ -154,6 +154,9 @@ int main(void) {
         }
     }
 
+    hook_early_init();
+    keyboard_setup();
+
     host_driver_t* selected_driver = connect_driver(dc);
     /* On ChibiOS
     * Do need to wait here!
@@ -165,9 +168,6 @@ int main(void) {
     wait_ms(50);
 
     print("USB configured.\n");
-
-    hook_early_init();
-    keyboard_setup();
 
     /* init TMK modules */
     keyboard_init();
