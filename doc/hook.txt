@@ -6,6 +6,7 @@ The following hooks are available available:
 
 Hook function                   | Timing
 --------------------------------|-----------------------------------------------
+`host_driver_configuration_t* hook_get_driver_configuration(void)` | At the start of the program, should return a valid configuration, see the code documentation for `host_driver_configuration` for more information. 
 `hook_early_init(void)`         | Early in the boot process, before the matrix is initialized and before a connection is made with the host. Thus, this hook has access to very few parameters, but it is a good place to define any custom parameters needed by other early processes.
 `hook_late_init(void)`          | Near the end of the boot process, after Boot Magic has run and LEDs have been initialized.
 `hook_bootmagic(void)`          | During the Boot Magic window, after EEPROM and Bootloader checks are made, but before any other built-in Boot Magic checks are made.
