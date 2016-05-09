@@ -210,7 +210,7 @@ AOPT =
 TOPT = -mthumb -DTHUMB
 
 # Define C warning options here
-CWARN = -Wall -Wextra -Wundef -Wstrict-prototypes -Wno-missing-field-initializers
+CWARN = -Wall -Wextra -Wundef -Wstrict-prototypes -Wno-missing-field-initializers -Werror
 
 # Define C++ warning options here
 CPPWARN = -Wall -Wextra -Wundef

@@ -57,9 +57,9 @@ static void command_console_help(void);
 #ifdef MOUSEKEY_ENABLE
 static bool mousekey_console(uint8_t code);
 static void mousekey_console_help(void);
+static uint8_t numkey2num(uint8_t code);
 #endif
 
-static uint8_t numkey2num(uint8_t code);
 static void switch_default_layer(uint8_t layer);
 
 
@@ -615,12 +615,7 @@ static bool mousekey_console(uint8_t code)
     }
     return true;
 }
-#endif
 
-
-/***********************************************************
- * Utilities
- ***********************************************************/
 static uint8_t numkey2num(uint8_t code)
 {
     switch (code) {
@@ -637,7 +632,12 @@ static uint8_t numkey2num(uint8_t code)
     }
     return 0;
 }
+#endif
 
+
+/***********************************************************
+ * Utilities
+ ***********************************************************/
 static void switch_default_layer(uint8_t layer)
 {
     xprintf("L%d\n", layer);

@@ -18,6 +18,7 @@ CC_FLAGS += \
 	-fno-common \
 	-fmessage-length=0 \
 	-Wall \
+	-Werror \
 	-fno-exceptions \
 	-ffunction-sections \
 	-fdata-sections \
