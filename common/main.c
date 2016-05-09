@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "print.h"
 #include "timer.h"
 #include "host.h"
+#include "matrix.h"
 #ifdef MOUSEKEY_ENABLE
 #include "mousekey.h"
 #endif
@@ -117,6 +118,7 @@ static void keyboard_loop(host_driver_configuration_t* dc) {
         if (host_get_driver()) {
             if(host_get_driver()->is_suspended()) {
                 print("[s]");
+                matrix_power_down();
                 while(host_get_driver() && host_get_driver()->is_suspended()) {
                     hook_usb_suspend_loop();
                     poll_drivers(dc);
@@ -125,6 +127,7 @@ static void keyboard_loop(host_driver_configuration_t* dc) {
                         host_get_driver()->send_remote_wakeup();
                     }
                 }
+                matrix_power_up();
                 /* Woken up */
                 // variables have been already cleared
                 send_keyboard_report();
