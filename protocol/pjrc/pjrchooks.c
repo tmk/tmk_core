@@ -26,6 +26,8 @@
 #include "pjrc.h"
 #include "suspend.h"
 #include "host.h"
+#include "sendchar.h"
+#include "print.h"
 #ifdef SLEEP_LED_ENABLE
 #include "sleep_led.h"
 #endif
