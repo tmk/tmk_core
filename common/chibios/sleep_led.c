@@ -62,7 +62,7 @@ OSAL_IRQ_HANDLER(TIMER_INTERRUPT_VECTOR) {
     timer.row++;
 
     // LED on
-    if (timer.pwm.count == 0) {
+    if (timer.pwm.count == 0 && breathing_table[timer.pwm.index] != 0 ) {
         led_set(1<<USB_LED_CAPS_LOCK);
     }
     // LED off
