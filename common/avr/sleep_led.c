@@ -92,7 +92,7 @@ ISR(TIMER1_COMPA_vect)
     timer.row++;
     
     // LED on
-    if (timer.pwm.count == 0) {
+    if (timer.pwm.count == 0 && pgm_read_byte(&breathing_table[timer.pwm.index]) != 0 ) {
         sleep_led_on();
     }
     // LED off
