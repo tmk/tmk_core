@@ -52,10 +52,13 @@ void send_remote_wakeup(USBDriver *usbp);
 
 /* secondary keyboard */
 #ifdef NKRO_ENABLE
-#define NKRO_INTERFACE    4
-#define NKRO_ENDPOINT     5
+#define NKRO_INTERFACE    EXTRA_INTERFACE+1
+#define NKRO_ENDPOINT     EXTRA_ENDPOINT+1
 #define NKRO_EPSIZE       16
 #define NKRO_REPORT_KEYS  (NKRO_EPSIZE - 1)
+#else
+#define NKRO_INTERFACE    EXTRA_INTERFACE
+#define NKRO_ENDPOINT     EXTRA_ENDPOINT
 #endif
 
 /* extern report_keyboard_t keyboard_report_sent; */
@@ -78,12 +81,15 @@ void nkro_in_cb(USBDriver *usbp, usbep_t ep);
 
 #ifdef MOUSE_ENABLE
 
-#define MOUSE_INTERFACE         1
-#define MOUSE_ENDPOINT          2
+#define MOUSE_INTERFACE         (KBD_INTERFACE+1)
+#define MOUSE_ENDPOINT          (KBD_ENDPOINT+1)
 #define MOUSE_EPSIZE            8
 
 /* mouse IN request callback handler */
 void mouse_in_cb(USBDriver *usbp, usbep_t ep);
+#else
+#define MOUSE_INTERFACE         KBD_INTERFACE
+#define MOUSE_ENDPOINT          KBD_ENDPOINT
 #endif /* MOUSE_ENABLE */
 
 /* ---------------
@@ -93,8 +99,8 @@ void mouse_in_cb(USBDriver *usbp, usbep_t ep);
 
 #ifdef EXTRAKEY_ENABLE
 
-#define EXTRA_INTERFACE         3
-#define EXTRA_ENDPOINT          4
+#define EXTRA_INTERFACE        (CONSOLE_INTERFACE+1)
+#define EXTRA_ENDPOINT         (CONSOLE_ENDPOINT+1)
 #define EXTRA_EPSIZE            8
 
 /* extrakey IN request callback handler */
@@ -105,6 +111,9 @@ typedef struct {
   uint8_t report_id;
   uint16_t usage;
 } __attribute__ ((packed)) report_extra_t;
+#else
+#define EXTRA_INTERFACE        CONSOLE_INTERFACE
+#define EXTRA_ENDPOINT         CONSOLE_ENDPOINT
 #endif /* EXTRAKEY_ENABLE */
 
 /* --------------
@@ -114,8 +123,8 @@ typedef struct {
 
 #ifdef CONSOLE_ENABLE
 
-#define CONSOLE_INTERFACE      2
-#define CONSOLE_ENDPOINT       3
+#define CONSOLE_INTERFACE      (MOUSE_INTERFACE+1)
+#define CONSOLE_ENDPOINT       (MOUSE_ENDPOINT+1)
 #define CONSOLE_EPSIZE         16
 
 /* Number of IN reports that can be stored inside the output queue */
@@ -132,6 +141,9 @@ void console_flush_output(void);
 
 /* console IN request callback handler */
 void console_in_cb(USBDriver *usbp, usbep_t ep);
+#else
+#define CONSOLE_INTERFACE      MOUSE_INTERFACE
+#define CONSOLE_ENDPOINT       MOUSE_ENDPOINT
 #endif /* CONSOLE_ENABLE */
 
 void sendchar_pf(void *p, char c);
