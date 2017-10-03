@@ -363,7 +363,7 @@ static const USBDescriptor extra_hid_report_descriptor = {
 
 #ifdef NKRO_ENABLE
 #   define NKRO_HID_DESC_NUM            (EXTRA_HID_DESC_NUM + 1)
-#   define NKRO_HID_DESC_OFFSET         (9 + (9 + 9 + 7) * EXTRA_HID_DESC_NUM + 9)
+#   define NKRO_HID_DESC_OFFSET         (9 + (9 + 9 + 7) * NKRO_HID_DESC_NUM + 9)
 #else /* NKRO_ENABLE */
 #   define NKRO_HID_DESC_NUM            (EXTRA_HID_DESC_NUM + 0)
 #endif /* NKRO_ENABLE */
