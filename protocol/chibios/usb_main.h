@@ -49,8 +49,8 @@ void init_usb_driver(USBDriver *usbp);
 
 /* secondary keyboard */
 #ifdef NKRO_ENABLE
-#define NKRO_INTERFACE    EXTRA_INTERFACE+1
-#define NKRO_ENDPOINT     EXTRA_ENDPOINT+1
+#define NKRO_INTERFACE    (EXTRA_INTERFACE+1)
+#define NKRO_ENDPOINT     (EXTRA_ENDPOINT+1)
 #define NKRO_EPSIZE       16
 #define NKRO_REPORT_KEYS  (NKRO_EPSIZE - 1)
 #else
