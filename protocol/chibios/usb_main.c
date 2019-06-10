@@ -657,6 +657,7 @@ static const USBDescriptor *usb_get_descriptor_cb(USBDriver *usbp, uint8_t dtype
       return &nkro_hid_descriptor;
 #endif /* NKRO_ENABLE */
     }
+    break;
 
   case USB_DESCRIPTOR_HID_REPORT:       /* HID Report Descriptor */
     switch(lang) {
