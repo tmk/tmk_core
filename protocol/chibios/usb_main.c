@@ -657,6 +657,7 @@ static const USBDescriptor *usb_get_descriptor_cb(USBDriver *usbp, uint8_t dtype
       return &nkro_hid_descriptor;
 #endif /* NKRO_ENABLE */
     }
+    break;
 
   case USB_DESCRIPTOR_HID_REPORT:       /* HID Report Descriptor */
     switch(lang) {
@@ -1036,27 +1037,6 @@ void init_usb_driver(USBDriver *usbp) {
   obqObjectInit(&console_buf_queue, console_queue_buffer, CONSOLE_EPSIZE, CONSOLE_QUEUE_CAPACITY, console_queue_onotify, (void*)usbp);
   chVTObjectInit(&console_flush_timer);
 #endif
-}
-
-/*
- * Send remote wakeup packet
- * Note: should not be called from ISR
- */
-void send_remote_wakeup(USBDriver *usbp) {
-  (void)usbp;
-#if defined(K20x) || defined(KL2x)
-#if KINETIS_USB_USE_USB0
-  USB0->CTL |= USBx_CTL_RESUME;
-  chThdSleepMilliseconds(15);
-  USB0->CTL &= ~USBx_CTL_RESUME;
-#endif /* KINETIS_USB_USE_USB0 */
-#elif defined(STM32F0XX) || defined(STM32F1XX) /* K20x || KL2x */
-  STM32_USB->CNTR |= CNTR_RESUME;
-  chThdSleepMilliseconds(15);
-  STM32_USB->CNTR &= ~CNTR_RESUME;
-#else /* STM32F0XX || STM32F1XX */
-#warning Sending remote wakeup packet not implemented for your platform.
-#endif /* K20x || KL2x */
 }
 
 /* ---------------------------------------------------------

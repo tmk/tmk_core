@@ -72,7 +72,7 @@ void hook_usb_suspend_loop(void) {
   suspend_power_down(); // on AVR this deep sleeps for 15ms
   /* Remote wakeup */
   if((USB_DRIVER.status & 2) && suspend_wakeup_condition()) {
-    send_remote_wakeup(&USB_DRIVER);
+    usbWakeupHost(&USB_DRIVER);
   }
 }
 
