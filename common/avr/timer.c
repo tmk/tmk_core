@@ -46,7 +46,11 @@ void timer_init(void)
 #endif
 
     OCR0A = TIMER_RAW_TOP;
+#ifdef TIMSK0
     TIMSK0 = (1<<OCIE0A);
+#else
+    TIMSK = (1<<OCIE0A);
+#endif
 }
 
 inline
@@ -111,7 +115,7 @@ uint32_t timer_elapsed32(uint32_t last)
 }
 
 // excecuted once per 1ms.(excess for just timer count?)
-ISR(TIMER0_COMPA_vect)
+ISR(TIMER0_COMPA_vect, ISR_NOBLOCK)
 {
     timer_count++;
 }

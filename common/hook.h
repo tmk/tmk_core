@@ -20,6 +20,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "keyboard.h"
 #include "led.h"
+#include "action.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* -------------------------------------
  * Protocol hooks
@@ -46,6 +51,10 @@ void hook_usb_suspend_loop(void);
 /* Default behaviour: disables sleep LED breathing and restores 
  * the "normal" indicator LED status by default. */
 void hook_usb_wakeup(void);
+
+/* Called repeatedly until getting to CONFIGURED state */
+/* Default behaviour: do nothing. */
+void hook_usb_startup_wait_loop(void);
 
 
 /* -------------------------------------
@@ -76,5 +85,12 @@ void hook_keyboard_leds_change(uint8_t led_status);
 /* Default behaviour: do nothing. */
 void hook_bootmagic(void);
 
+/* Called on before processing key event */
+/* returns true if the event is consumed and default action is not needed. */
+bool hook_process_action(keyrecord_t *record);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _HOOKS_H_ */

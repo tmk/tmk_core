@@ -57,9 +57,10 @@ static void command_console_help(void);
 #ifdef MOUSEKEY_ENABLE
 static bool mousekey_console(uint8_t code);
 static void mousekey_console_help(void);
+static uint8_t numkey2num(uint8_t code);
 #endif
 
-static uint8_t numkey2num(uint8_t code);
+
 static void switch_default_layer(uint8_t layer);
 
 
@@ -283,7 +284,7 @@ static bool command_common(uint8_t code)
             print("VID: " STR(VENDOR_ID) "(" STR(MANUFACTURER) ") "
                   "PID: " STR(PRODUCT_ID) "(" STR(PRODUCT) ") "
                   "VER: " STR(DEVICE_VER) "\n");
-            print("BUILD: " STR(VERSION) " (" __TIME__ " " __DATE__ ")\n");
+            print("BUILD: " STR(TMK_VERSION) " (" __TIME__ " " __DATE__ ")\n");
             /* build options */
             print("OPTIONS:"
 #ifdef PROTOCOL_PJRC
@@ -629,6 +630,7 @@ static bool mousekey_console(uint8_t code)
 /***********************************************************
  * Utilities
  ***********************************************************/
+#if MOUSEKEY_ENABLE
 static uint8_t numkey2num(uint8_t code)
 {
     switch (code) {
@@ -645,6 +647,7 @@ static uint8_t numkey2num(uint8_t code)
     }
     return 0;
 }
+#endif
 
 static void switch_default_layer(uint8_t layer)
 {

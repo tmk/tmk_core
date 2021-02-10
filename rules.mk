@@ -411,6 +411,9 @@ gccversion :
 program: $(TARGET).hex $(TARGET).eep
 	$(PROGRAM_CMD)
 
+dude: $(TARGET).hex
+	avrdude -p$(MCU) -cavr109 -b57600 -Uflash:w:$(TARGET).hex -P$(DEV)
+
 teensy: $(TARGET).hex
 	teensy_loader_cli -mmcu=$(MCU) -w -v $(TARGET).hex
 
@@ -427,13 +430,14 @@ dfu: $(TARGET).hex
 	done
 	@echo
 
-ifneq (, $(findstring 0.7, $(shell dfu-programmer --version 2>&1)))
+ifeq ($(shell dfu-programmer --version 2>&1 | grep -q 0.7; echo $$?),0)
 	dfu-programmer $(MCU) erase --force
 else
 	dfu-programmer $(MCU) erase
 endif
+
 	dfu-programmer $(MCU) flash $(TARGET).hex
-	dfu-programmer $(MCU) reset
+	dfu-programmer $(MCU) reset || true # ignore exit code
 	
 dfu-start:
 	dfu-programmer $(MCU) reset
@@ -447,11 +451,7 @@ flip-ee: $(TARGET).hex $(TARGET).eep
 	$(REMOVE) $(TARGET)eep.hex
 
 dfu-ee: $(TARGET).hex $(TARGET).eep
-ifneq (, $(findstring 0.7, $(shell dfu-programmer --version 2>&1)))
 	dfu-programmer $(MCU) flash --eeprom $(TARGET).eep
-else
-	dfu-programmer $(MCU) flash-eeprom $(TARGET).eep
-endif
 	dfu-programmer $(MCU) reset
 
 
