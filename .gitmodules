@@ -1,0 +1,6 @@
+[submodule "protocol/usb_hid/USB_Host_Shield_2.0-tmk"]
+	path = protocol/usb_hid/USB_Host_Shield_2.0-tmk
+	url = https://github.com/tmk/USB_Host_Shield_2.0.git
+[submodule "protocol/lufa/lufa-abcminiuser"]
+	path = protocol/lufa/lufa-abcminiuser
+	url = https://github.com/abcminiuser/lufa.git
