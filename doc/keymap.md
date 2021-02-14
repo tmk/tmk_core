@@ -454,6 +454,7 @@ e.g.:
     MACRO( D(LSHIFT), D(D), END )  // hold down LSHIFT and D - will print 'D'
     MACRO( U(D), U(LSHIFT), END )  // release U and LSHIFT keys (an event.pressed == False counterpart for the one above)
     MACRO( I(255), T(H), T(E), T(L), T(L), W(255), T(O), END ) // slowly print out h-e-l-l---o
+    MACRO( T(RCTL), SM(), CM(), T(SLSH), RM(), T(O), END ) // creates an "å" or "Å" with the help of a Compose key utility on the host
 
 #### 2.3.2 Examples
 
