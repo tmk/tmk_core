@@ -32,6 +32,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 extern "C" {
 #endif
 
+__attribute__((weak))
 void led_set(uint8_t usb_led);
 
 #ifdef __cplusplus
